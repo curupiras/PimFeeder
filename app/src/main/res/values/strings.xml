@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">PimFeeder</string>
     <string name="add_button">ADICIONAR</string>
+    <string name="sunday">D</string>
+    <string name="monday">S</string>
+    <string name="tuesday">T</string>
+    <string name="wednesday">Q</string>
+    <string name="thursday">Q</string>
+    <string name="friday">S</string>
+    <string name="saturday">S</string>
 </resources>

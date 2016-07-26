@@ -5,57 +5,109 @@
     android:padding="5dp">
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/layout_bg_shade">
+        android:background="@drawable/layout_bg_shade"
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/feedImageView"
-            android:layout_width="60px"
-            android:layout_height="60px"
-            android:layout_marginLeft="20px"
-            android:layout_marginRight="20px"
-            android:layout_marginTop="30px"
-            android:layout_marginBottom="30px"
-            android:src="@mipmap/ic_launcher" >
-        </ImageView>
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="30dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="30dp"
+            android:src="@mipmap/ic_meat"></ImageView>
 
         <TextView
             android:id="@+id/timeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@+id/timeTextView"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:textSize="40px" >
-        </TextView>
+            android:text="@+id/timeTextView"
+            android:textSize="40dp"></TextView>
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10px"
-                android:layout_marginTop="5px"
-                android:layout_weight="7"
-                android:text="X"
-                android:background="@android:color/transparent"
                 android:id="@+id/deleteScheduleButton"
-                android:layout_gravity="top|right"/>
-
-            <TextView
-                android:id="@+id/weekDayTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:text="D S T Q Q S S"
-                android:layout_marginRight="20px"
-                android:textSize="20px">
-            </TextView>
+                android:layout_gravity="top|right"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="7"
+                android:background="@android:color/transparent"
+                android:text="X" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_weight="10">
+
+                <TextView
+                    android:id="@+id/sundayTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/sunday"
+                    android:textSize="20dp"></TextView>
+
+                <TextView
+                    android:id="@+id/mondayTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/monday"
+                    android:textSize="20dp"></TextView>
+
+                <TextView
+                    android:id="@+id/tuesdayTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/tuesday"
+                    android:textSize="20dp"></TextView>
+
+                <TextView
+                    android:id="@+id/wednesdayTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/wednesday"
+                    android:textSize="20dp"></TextView>
+
+                <TextView
+                    android:id="@+id/thursdayTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/thursday"
+                    android:textSize="20dp"></TextView>
+
+                <TextView
+                    android:id="@+id/fridayTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/friday"
+                    android:textSize="20dp"></TextView>
+
+                <TextView
+                    android:id="@+id/saturdayTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:text="@string/saturday"
+                    android:textSize="20dp"></TextView>
+
+            </LinearLayout>
 
         </LinearLayout>
 

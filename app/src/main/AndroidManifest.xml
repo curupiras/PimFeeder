@@ -8,16 +8,17 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".schedule.ScheduleActivity">
 
-        </activity>
-        <activity android:name=".schedule.ScheduleAdjustActivity">
+        <activity android:name=".schedule.ScheduleActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".schedule.ScheduleAdjustActivity">
+        </activity>
+
     </application>
 
 </manifest>

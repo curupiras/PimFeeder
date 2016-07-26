@@ -26,19 +26,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/add_button"
-            android:textSize="15px"
+            android:textSize="15dp"
             android:textColor="#888888"
             android:background="@android:color/transparent"
-            android:id="@+id/addButton"
+            android:id="@+id/addScheduleActivityButton"
             android:layout_gravity="right"
-            android:layout_marginBottom="10px"/>
+            android:layout_marginBottom="10dp"
+            android:onClick="openScheduleAdjustActivity"/>
 
         <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/schedulesList"
+            android:id="@+id/schedulesScheduleActivityListView"
             android:layout_gravity="center_horizontal"
-            android:divider="@android:color/transparent"
-            style="@style/AppTheme" />
+            android:divider="@android:color/transparent"/>
     </LinearLayout>
+
 </RelativeLayout>
