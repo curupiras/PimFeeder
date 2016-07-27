@@ -60,4 +60,36 @@ public class DateUtils {
         }
         return finalDateTime;
     }
+
+    public static String getCompleteDay(String timeToFormat) {
+
+        String finalDateTime = "";
+
+        SimpleDateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        Date date = null;
+        if (timeToFormat != null) {
+            try {
+                date = iso8601Format.parse(timeToFormat);
+            } catch (ParseException e) {
+                date = null;
+            }
+
+            if (date != null) {
+                SimpleDateFormat HHmmformat = new SimpleDateFormat("E, dd MMM");
+                finalDateTime = HHmmformat.format(date);
+            }
+        }
+        return toPortuguese(finalDateTime);
+    }
+
+    private static String toPortuguese(String date) {
+        String portugueseDate = date;
+
+        portugueseDate = portugueseDate.replace("Wed", "Qua");
+
+        portugueseDate = portugueseDate.replace("Jul", "de Jul");
+
+        return portugueseDate;
+    }
 }

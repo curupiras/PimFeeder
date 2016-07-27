@@ -6,8 +6,12 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.curubodenga.pimfeeder.R;
 import br.com.curubodenga.pimfeeder.utils.DateUtils;
@@ -41,19 +45,55 @@ public class ItemAdapter extends SimpleCursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
 
         TextView timeTextView = (TextView) view.findViewById(to[0]);
-
         String time = DateUtils.getHHmm(cursor.getString(cursor.getColumnIndex(from[0])));
         timeTextView.setText(time);
 
+        TextView completeDayTextView = (TextView) view.findViewById(R.id.completeDayTextView);
+        time = DateUtils.getCompleteDay(cursor.getString(cursor.getColumnIndex(from[0])));
+        completeDayTextView.setText(time);
+
+        boolean isAllUnsetted = true;
+        List<TextView> textViews = new ArrayList<TextView>();
         for (int i = 1; i < from.length; i++) {
             TextView dayTextView = (TextView) view.findViewById(to[i]);
-            int daySetted = cursor.getInt(cursor.getColumnIndex(from[i]));
-            if (toBoolean(daySetted)) {
+            textViews.add(dayTextView);
+            int daySettedInt = cursor.getInt(cursor.getColumnIndex(from[i]));
+            boolean daySetted = toBoolean(daySettedInt);
+            isAllUnsetted = isAllUnsetted && !daySetted;
+            if (daySetted) {
                 dayTextView.setTextColor(Color.RED);
             } else {
                 dayTextView.setTextColor(Color.BLACK);
             }
         }
+
+        if (isAllUnsetted) {
+            hideWeekDaysLayout(view);
+            showCompleteDayTextView(view);
+        } else {
+            showWeekDaysLayout(view);
+            hideCompleteDayTextView(view);
+        }
+    }
+
+    private void hideWeekDaysLayout(View view) {
+        LinearLayout weekDayLayout = (LinearLayout) view.findViewById(R.id.weekDayLayout);
+        weekDayLayout.setVisibility(View.GONE);
+    }
+
+    private void showWeekDaysLayout(View view) {
+        LinearLayout weekDayLayout = (LinearLayout) view.findViewById(R.id.weekDayLayout);
+        weekDayLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void hideCompleteDayTextView(View view) {
+        LinearLayout completeDayLayout = (LinearLayout) view.findViewById(R.id.completeDayLayout);
+        completeDayLayout.setVisibility(View.GONE);
+    }
+
+    private void showCompleteDayTextView(View view) {
+        LinearLayout completeDayLayout = (LinearLayout) view.findViewById(R.id.completeDayLayout);
+        completeDayLayout.setVisibility(View.VISIBLE);
     }
 
     private Boolean toBoolean(int i) {

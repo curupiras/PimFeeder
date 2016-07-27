@@ -137,6 +137,8 @@ public class ScheduleDbAdapter {
         createSchedule(date, 0, 1, 1, 0, 1, 1, 1);
         date.setHours(15);
         createSchedule(date, 1, 0, 1, 0, 1, 1, 0);
+        date.setHours(16);
+        createSchedule(date, 0, 0, 0, 0, 0, 0, 0);
 
     }
 
