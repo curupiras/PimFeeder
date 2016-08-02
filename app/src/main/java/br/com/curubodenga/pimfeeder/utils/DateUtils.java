@@ -83,12 +83,27 @@ public class DateUtils {
         return toPortuguese(finalDateTime);
     }
 
+    public static String getCompleteDay(Date date){
+        if (date != null) {
+            SimpleDateFormat HHmmformat = new SimpleDateFormat("E, dd MMM");
+            return toPortuguese(HHmmformat.format(date));
+        }
+        return null;
+    }
+
     private static String toPortuguese(String date) {
         String portugueseDate = date;
 
+        portugueseDate = portugueseDate.replace("Mon", "Seg");
+        portugueseDate = portugueseDate.replace("Tue", "Ter");
         portugueseDate = portugueseDate.replace("Wed", "Qua");
+        portugueseDate = portugueseDate.replace("Thu", "Qui");
+        portugueseDate = portugueseDate.replace("Fri", "Sex");
+        portugueseDate = portugueseDate.replace("Sat", "Sab");
+        portugueseDate = portugueseDate.replace("Sun", "Dom");
 
         portugueseDate = portugueseDate.replace("Jul", "de Jul");
+        portugueseDate = portugueseDate.replace("Aug", "de Ago");
 
         return portugueseDate;
     }

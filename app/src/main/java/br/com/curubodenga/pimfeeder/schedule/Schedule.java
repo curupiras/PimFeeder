@@ -16,6 +16,17 @@ public class Schedule {
     private Boolean repeatSat;
     private Boolean repeatSun;
 
+    public Schedule() {
+        this.date = new Date();
+        this.repeatMon = false;
+        this.repeatTue = false;
+        this.repeatWed = false;
+        this.repeatThu = false;
+        this.repeatFri = false;
+        this.repeatSat = false;
+        this.repeatSun = false;
+    }
+
     public Date getDate() {
         return date;
     }
@@ -78,5 +89,55 @@ public class Schedule {
 
     public void setRepeatSun(Boolean repeatSun) {
         this.repeatSun = repeatSun;
+    }
+
+    public void mondayToggle(){
+        if(this.repeatMon){
+            this.repeatMon = false;
+        }else{
+            this.repeatMon = true;
+        }
+    }
+    public void tuesdayToggle(){
+        if(this.repeatTue){
+            this.repeatTue = false;
+        }else{
+            this.repeatTue = true;
+        }
+    }
+    public void wednesdayToggle(){
+        if(this.repeatWed){
+            this.repeatWed = false;
+        }else{
+            this.repeatWed = true;
+        }
+    }
+    public void thursdayToggle(){
+        if(this.repeatThu){
+            this.repeatThu = false;
+        }else{
+            this.repeatThu = true;
+        }
+    }
+    public void fridayToggle(){
+        if(this.repeatFri){
+            this.repeatFri = false;
+        }else{
+            this.repeatFri = true;
+        }
+    }
+    public void saturdayToggle(){
+        if(this.repeatSat){
+            this.repeatSat = false;
+        }else{
+            this.repeatSat = true;
+        }
+    }
+    public void sundayToggle(){
+        if(this.repeatSun){
+            this.repeatSun = false;
+        }else{
+            this.repeatSun = true;
+        }
     }
 }

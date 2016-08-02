@@ -87,7 +87,20 @@ public class ScheduleDbAdapter {
         }
     }
 
-    public long createSchedule(Date date, int sunday, int monday, int tuesday, int wednesday, int
+    public long createSchedule(Schedule schedule) {
+        int sunday = schedule.getRepeatSun() ? 1 : 0;
+        int monday = schedule.getRepeatMon() ? 1 : 0;
+        int tuesday = schedule.getRepeatTue() ? 1 : 0;
+        int wednesday = schedule.getRepeatWed() ? 1 : 0;
+        int thursday = schedule.getRepeatThu() ? 1 : 0;
+        int friday = schedule.getRepeatFri() ? 1 : 0;
+        int saturday = schedule.getRepeatSat() ? 1 : 0;
+
+        return createSchedule(schedule.getDate(), sunday, monday, tuesday, wednesday, thursday,
+                friday, saturday);
+    }
+
+    private long createSchedule(Date date, int sunday, int monday, int tuesday, int wednesday, int
             thursday, int friday, int saturday) {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

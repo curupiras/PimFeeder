@@ -18,7 +18,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="30dp"
-            android:src="@mipmap/ic_meat"></ImageView>
+            android:src="@drawable/ic_chicken_leg"></ImageView>
 
         <TextView
             android:id="@+id/timeTextView"

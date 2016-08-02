@@ -26,8 +26,8 @@ public class ScheduleActivity extends AppCompatActivity {
         dbHelper.open();
 
         //TODO: Remover códigos de teste.
-        dbHelper.deleteAllSchedules();
-        dbHelper.insertSomeSchedules();
+//        dbHelper.deleteAllSchedules();
+//        dbHelper.insertSomeSchedules();
 
         displayListView();
     }
