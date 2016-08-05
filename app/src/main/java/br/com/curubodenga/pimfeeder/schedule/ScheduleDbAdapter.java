@@ -124,7 +124,13 @@ public class ScheduleDbAdapter {
         doneDelete = mDb.delete(SQLITE_TABLE, null, null);
         Log.w(TAG, Integer.toString(doneDelete));
         return doneDelete > 0;
+    }
 
+    public boolean deleteItem(String key) {
+        int doneDelete = 0;
+        doneDelete = mDb.delete(SQLITE_TABLE, KEY_ROWID + "=" + key, null);
+        Log.w(TAG, Integer.toString(doneDelete));
+        return doneDelete > 0;
     }
 
     public Cursor fetchAllSchedules() {

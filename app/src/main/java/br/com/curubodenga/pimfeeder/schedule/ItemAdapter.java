@@ -52,9 +52,13 @@ public class ItemAdapter extends SimpleCursorAdapter {
         time = DateUtils.getCompleteDay(cursor.getString(cursor.getColumnIndex(from[0])));
         completeDayTextView.setText(time);
 
+        TextView scheduleItemId = (TextView) view.findViewById(R.id.scheduleItemId);
+        scheduleItemId.setText(cursor.getString(cursor.getColumnIndex(ScheduleDbAdapter.KEY_ROWID)));
+
+
         boolean isAllUnsetted = true;
         List<TextView> textViews = new ArrayList<TextView>();
-        for (int i = 1; i < from.length; i++) {
+        for (int i = 1; i < from.length-1; i++) {
             TextView dayTextView = (TextView) view.findViewById(to[i]);
             textViews.add(dayTextView);
             int daySettedInt = cursor.getInt(cursor.getColumnIndex(from[i]));

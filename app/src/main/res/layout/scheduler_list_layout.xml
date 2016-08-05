@@ -4,6 +4,12 @@
               android:layout_height="wrap_content"
               android:padding="5dp">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:id="@+id/scheduleItemId"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -36,13 +42,16 @@
 
             <TextView
                 android:id="@+id/deleteScheduleButton"
-                android:layout_width="wrap_content"
+                android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|right"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_weight="7"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp"
+                android:layout_weight="1"
+                android:onClick="deleteItem"
                 android:background="@android:color/transparent"
+                android:gravity="right"
+                android:textAlignment="gravity"
                 android:text="X"/>
 
             <LinearLayout
@@ -50,6 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
+                android:paddingBottom="25dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -58,6 +68,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:text="@string/sunday"
+                    android:layout_gravity="center_vertical"
                     android:textSize="20dp"></TextView>
 
                 <TextView
@@ -66,6 +77,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:text="@string/monday"
+                    android:layout_gravity="center_vertical"
                     android:textSize="20dp"></TextView>
 
                 <TextView
@@ -74,6 +86,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:text="@string/tuesday"
+                    android:layout_gravity="center_vertical"
                     android:textSize="20dp"></TextView>
 
                 <TextView
@@ -82,6 +95,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:text="@string/wednesday"
+                    android:layout_gravity="center_vertical"
                     android:textSize="20dp"></TextView>
 
                 <TextView
@@ -90,6 +104,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:text="@string/thursday"
+                    android:layout_gravity="center_vertical"
                     android:textSize="20dp"></TextView>
 
                 <TextView
@@ -98,6 +113,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:text="@string/friday"
+                    android:layout_gravity="center_vertical"
                     android:textSize="20dp"></TextView>
 
                 <TextView
@@ -106,6 +122,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
                     android:text="@string/saturday"
+                    android:layout_gravity="center_vertical"
                     android:textSize="20dp"></TextView>
 
             </LinearLayout>
@@ -115,6 +132,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
+                android:paddingBottom="25dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -122,6 +140,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
+                    android:layout_gravity="center_vertical"
                     android:textSize="20dp"></TextView>
             </LinearLayout>
 

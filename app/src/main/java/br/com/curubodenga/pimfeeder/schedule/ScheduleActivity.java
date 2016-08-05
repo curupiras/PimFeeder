@@ -1,13 +1,16 @@
 package br.com.curubodenga.pimfeeder.schedule;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import br.com.curubodenga.pimfeeder.R;
@@ -44,6 +47,7 @@ public class ScheduleActivity extends AppCompatActivity {
                 ScheduleDbAdapter.KEY_FRIDAY,
                 ScheduleDbAdapter.KEY_SATURDAY,
                 ScheduleDbAdapter.KEY_SUNDAY,
+                ScheduleDbAdapter.KEY_ROWID
         };
 
         int[] scheduleListLayoutIDs = new int[]{
@@ -54,7 +58,8 @@ public class ScheduleActivity extends AppCompatActivity {
                 R.id.thursdayTextView,
                 R.id.fridayTextView,
                 R.id.saturdayTextView,
-                R.id.sundayTextView
+                R.id.sundayTextView,
+                R.id.scheduleItemId
         };
 
         dataAdapter = new ItemAdapter(this, R.layout.scheduler_list_layout, cursor,
@@ -77,4 +82,15 @@ public class ScheduleActivity extends AppCompatActivity {
     }
 
 
+    public void deleteItem(View view) {
+        ScheduleDbAdapter scheduleDbAdapter = new ScheduleDbAdapter(this);
+        scheduleDbAdapter.open();
+
+        View linearLayout = (View) view.getParent().getParent().getParent();
+        TextView scheduleItemIdTextView = (TextView) linearLayout.findViewById(R.id.scheduleItemId);
+        String itemId = scheduleItemIdTextView.getText().toString();
+
+        scheduleDbAdapter.deleteItem(itemId);
+        displayListView();
+    }
 }
