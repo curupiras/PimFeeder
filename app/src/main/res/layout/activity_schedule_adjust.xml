@@ -20,6 +20,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="20dp"
             android:layout_marginTop="10dp"
+            android:id="@+id/topScheduleAdjustLayout"
             android:orientation="horizontal">
 
             <TextView
@@ -53,7 +54,9 @@
 
         <DatePicker
             android:id="@+id/scheduleAdjustDatePicker"
-            android:layout_width="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:theme="@style/MyDatePickerTheme"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <TimePicker
@@ -61,6 +64,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:background="@drawable/layout_bg"
+            android:theme="@style/MyTimePickerTheme"
             android:timePickerMode="spinner"/>
 
         <LinearLayout
@@ -81,8 +86,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:text="D"
                 android:onClick="sundayToggle"
+                android:text="D"
                 android:textSize="20dp"/>
 
             <TextView
@@ -101,8 +106,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:text="S"
                 android:onClick="mondayToggle"
+                android:text="S"
                 android:textSize="20dp"/>
 
             <TextView
@@ -121,8 +126,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:text="T"
                 android:onClick="tuesdayToggle"
+                android:text="T"
                 android:textSize="20dp"/>
 
             <TextView
@@ -141,8 +146,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:text="Q"
                 android:onClick="wednesdayToggle"
+                android:text="Q"
                 android:textSize="20dp"/>
 
             <TextView
@@ -161,8 +166,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:text="Q"
                 android:onClick="thursdayToggle"
+                android:text="Q"
                 android:textSize="20dp"/>
 
             <TextView
@@ -181,8 +186,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:text="S"
                 android:onClick="fridayToggle"
+                android:text="S"
                 android:textSize="20dp"/>
 
             <TextView
@@ -201,8 +206,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:text="S"
                 android:onClick="saturdayToggle"
+                android:text="S"
                 android:textSize="20dp"/>
 
         </LinearLayout>
@@ -223,8 +228,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_marginRight="5dp"
-            android:onClick="save"
             android:layout_marginTop="20dp"
+            android:onClick="save"
             android:text="SALVAR"
             android:textSize="18dp"/>
 

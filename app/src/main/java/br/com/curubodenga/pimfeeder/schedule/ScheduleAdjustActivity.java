@@ -1,19 +1,18 @@
 package br.com.curubodenga.pimfeeder.schedule;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import java.sql.Time;
 import java.util.Calendar;
-import java.util.Date;
 
 import br.com.curubodenga.pimfeeder.R;
 import br.com.curubodenga.pimfeeder.utils.DateUtils;
@@ -27,11 +26,24 @@ public class ScheduleAdjustActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_adjust);
 
-        this.schedule = new Schedule();
-
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            String key = extras.getString(ScheduleDbAdapter.KEY_ROWID);
+            this.schedule = getSchedule(key);
+        } else {
+            this.schedule = new Schedule();
+        }
 
         openTimePicker();
         updateScreen();
+    }
+
+
+    private Schedule getSchedule(String key) {
+        ScheduleDbAdapter scheduleDbAdapter = new ScheduleDbAdapter(this);
+        scheduleDbAdapter.open();
+        Cursor cursor = scheduleDbAdapter.fetchSchedule(key);
+        return Schedule.getSchedule(cursor);
     }
 
     private void updateScreen() {
@@ -47,7 +59,12 @@ public class ScheduleAdjustActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(schedule.getDate());
 
-        timePicker.setCurrentHour(calendar.get(Calendar.HOUR));
+        int hour = calendar.get(Calendar.HOUR);
+        if (calendar.get(Calendar.AM_PM) == Calendar.PM) {
+            hour = hour + 12;
+        }
+
+        timePicker.setCurrentHour(hour);
         timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
     }
 
@@ -63,7 +80,77 @@ public class ScheduleAdjustActivity extends AppCompatActivity {
 
     private void updateCompleteDay() {
         TextView completeDay = (TextView) findViewById(R.id.completeDayScheduleAdjustTextView);
-        completeDay.setText(DateUtils.getCompleteDay(this.schedule.getDate()));
+
+        if (isAllRepeatUnset()) {
+            completeDay.setText(DateUtils.getCompleteDay(this.schedule.getDate()));
+        } else {
+            completeDay.setText(getWeekDaysString());
+        }
+    }
+
+    private String getWeekDaysString() {
+        String weekDayString = "";
+
+        if (schedule.getRepeatMon()) {
+            weekDayString = weekDayString + getResources().getString(R.string.mon);
+            weekDayString = weekDayString + ", ";
+        }
+        if (schedule.getRepeatTue()) {
+            weekDayString = weekDayString + getResources().getString(R.string.tue);
+            weekDayString = weekDayString + ", ";
+        }
+        if (schedule.getRepeatWed()) {
+            weekDayString = weekDayString + getResources().getString(R.string.wed);
+            weekDayString = weekDayString + ", ";
+        }
+        if (schedule.getRepeatThu()) {
+            weekDayString = weekDayString + getResources().getString(R.string.thu);
+            weekDayString = weekDayString + ", ";
+        }
+        if (schedule.getRepeatFri()) {
+            weekDayString = weekDayString + getResources().getString(R.string.fri);
+            weekDayString = weekDayString + ", ";
+        }
+        if (schedule.getRepeatSat()) {
+            weekDayString = weekDayString + getResources().getString(R.string.sat);
+            weekDayString = weekDayString + ", ";
+        }
+        if (schedule.getRepeatSun()) {
+            weekDayString = weekDayString + getResources().getString(R.string.sun);
+            weekDayString = weekDayString + ", ";
+        }
+
+        if(isAllRepeatSet()){
+            return getResources().getString(R.string.allDays);
+        }else{
+            return weekDayString.substring(0, weekDayString.length() - 2);
+        }
+    }
+
+    private boolean isAllRepeatUnset() {
+        boolean isAllUnsetted = true;
+        isAllUnsetted = isAllUnsetted && !schedule.getRepeatMon();
+        isAllUnsetted = isAllUnsetted && !schedule.getRepeatTue();
+        isAllUnsetted = isAllUnsetted && !schedule.getRepeatWed();
+        isAllUnsetted = isAllUnsetted && !schedule.getRepeatThu();
+        isAllUnsetted = isAllUnsetted && !schedule.getRepeatFri();
+        isAllUnsetted = isAllUnsetted && !schedule.getRepeatSat();
+        isAllUnsetted = isAllUnsetted && !schedule.getRepeatSun();
+
+        return isAllUnsetted;
+    }
+
+    private boolean isAllRepeatSet() {
+        boolean isAllSet = true;
+        isAllSet = isAllSet && schedule.getRepeatMon();
+        isAllSet = isAllSet && schedule.getRepeatTue();
+        isAllSet = isAllSet && schedule.getRepeatWed();
+        isAllSet = isAllSet && schedule.getRepeatThu();
+        isAllSet = isAllSet && schedule.getRepeatFri();
+        isAllSet = isAllSet && schedule.getRepeatSat();
+        isAllSet = isAllSet && schedule.getRepeatSun();
+
+        return isAllSet;
     }
 
     private void openTimePicker() {
@@ -75,12 +162,61 @@ public class ScheduleAdjustActivity extends AppCompatActivity {
 
         TimePicker timePicker = (TimePicker) findViewById(R.id.scheduleAdjustTimePicker);
         timePicker.setVisibility(View.VISIBLE);
+        timePicker.setIs24HourView(true);
+
+        LinearLayout linearLayout = (LinearLayout) timePicker.getChildAt(0);
+        linearLayout.setScaleX(1.5F);
+        linearLayout.setScaleY(1.5F);
+
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+        );
+        params.setMargins(0, 0, 0, 0);
+
+//        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(linearLayout.getWidth()*2,
+// linearLayout.getHeight()*2));
+
+        LinearLayout timePickerLinearLayout = (LinearLayout) linearLayout.getChildAt(0);
+        timePickerLinearLayout.setScaleX(1);
+        timePickerLinearLayout.setScaleY(1);
+
+
+        TextView twoPointsTextView = (TextView) timePickerLinearLayout.getChildAt(1);
+        NumberPicker hour = (NumberPicker) timePickerLinearLayout.getChildAt(0);
+        NumberPicker minute = (NumberPicker) timePickerLinearLayout.getChildAt(2);
+        hour.setScaleX(1);
+        hour.setScaleY(1);
+//        hour.setLayoutParams(params);
+
+        minute.setScaleX(1);
+        minute.setScaleY(1);
+//
+//
+        TextView hourTextView = (TextView) ((NumberPicker) timePickerLinearLayout.getChildAt(0))
+                .getChildAt(0);
+        TextView minuteTextView = (TextView) ((NumberPicker) timePickerLinearLayout.getChildAt(2)
+        ).getChildAt(0);
+
+
+//        twoPointsTextView.setScaleX(1);
+//        twoPointsTextView.setScaleY(1);
+//        hourTextView.setScaleX(2);
+//        hourTextView.setScaleY(2);
+//        hourTextView.setLayoutParams(params);
+//        minuteTextView.setScaleX(2);
+//        minuteTextView.setScaleY(2);
+
 
         LinearLayout weekDayLayout = (LinearLayout) findViewById(R.id.weekDayLayout);
         weekDayLayout.setVisibility(View.VISIBLE);
 
         TextView saveButton = (TextView) findViewById(R.id.dateScheduleAdjustSaveButton);
         saveButton.setVisibility(View.VISIBLE);
+
+        LinearLayout topLayout = (LinearLayout) findViewById(R.id.topScheduleAdjustLayout);
+        topLayout.setVisibility(View.VISIBLE);
     }
 
     public void openDatePicker(View view) {
@@ -98,6 +234,9 @@ public class ScheduleAdjustActivity extends AppCompatActivity {
 
         TextView saveButton = (TextView) findViewById(R.id.dateScheduleAdjustSaveButton);
         saveButton.setVisibility(View.GONE);
+
+        LinearLayout topLayout = (LinearLayout) findViewById(R.id.topScheduleAdjustLayout);
+        topLayout.setVisibility(View.GONE);
     }
 
     public void dateSelected(View view) {
@@ -109,6 +248,7 @@ public class ScheduleAdjustActivity extends AppCompatActivity {
         calendar.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
 
         this.schedule.setDate(calendar.getTime());
+        this.schedule.setAllRepeatFalse();
 
         updateScreen();
     }
@@ -123,43 +263,43 @@ public class ScheduleAdjustActivity extends AppCompatActivity {
         TextView sunday = (TextView) findViewById(R.id.sundayButton);
 
         if (schedule.getRepeatMon()) {
-            monday.setTextColor(Color.BLACK);
+            monday.setTextColor(Color.BLUE);
         } else {
             monday.setTextColor(Color.GRAY);
         }
 
         if (schedule.getRepeatTue()) {
-            tuesday.setTextColor(Color.BLACK);
+            tuesday.setTextColor(Color.BLUE);
         } else {
             tuesday.setTextColor(Color.GRAY);
         }
 
         if (schedule.getRepeatWed()) {
-            wednesday.setTextColor(Color.BLACK);
+            wednesday.setTextColor(Color.BLUE);
         } else {
             wednesday.setTextColor(Color.GRAY);
         }
 
         if (schedule.getRepeatThu()) {
-            thursday.setTextColor(Color.BLACK);
+            thursday.setTextColor(Color.BLUE);
         } else {
             thursday.setTextColor(Color.GRAY);
         }
 
         if (schedule.getRepeatFri()) {
-            friday.setTextColor(Color.BLACK);
+            friday.setTextColor(Color.BLUE);
         } else {
             friday.setTextColor(Color.GRAY);
         }
 
         if (schedule.getRepeatSat()) {
-            saturday.setTextColor(Color.BLACK);
+            saturday.setTextColor(Color.BLUE);
         } else {
             saturday.setTextColor(Color.GRAY);
         }
 
         if (schedule.getRepeatSun()) {
-            sunday.setTextColor(Color.BLACK);
+            sunday.setTextColor(Color.BLUE);
         } else {
             sunday.setTextColor(Color.GRAY);
         }
@@ -168,36 +308,43 @@ public class ScheduleAdjustActivity extends AppCompatActivity {
     public void saturdayToggle(View view) {
         this.schedule.saturdayToggle();
         updateWeekDayStatus();
+        updateCompleteDay();
     }
 
     public void mondayToggle(View view) {
         this.schedule.mondayToggle();
         updateWeekDayStatus();
+        updateCompleteDay();
     }
 
     public void tuesdayToggle(View view) {
         this.schedule.tuesdayToggle();
         updateWeekDayStatus();
+        updateCompleteDay();
     }
 
     public void wednesdayToggle(View view) {
         this.schedule.wednesdayToggle();
         updateWeekDayStatus();
+        updateCompleteDay();
     }
 
     public void thursdayToggle(View view) {
         this.schedule.thursdayToggle();
         updateWeekDayStatus();
+        updateCompleteDay();
     }
 
     public void fridayToggle(View view) {
         this.schedule.fridayToggle();
         updateWeekDayStatus();
+        updateCompleteDay();
     }
 
     public void sundayToggle(View view) {
         this.schedule.sundayToggle();
         updateWeekDayStatus();
+        updateCompleteDay();
     }
 
     public void save(View view) {

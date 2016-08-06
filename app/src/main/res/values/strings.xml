@@ -8,4 +8,12 @@
     <string name="thursday">Q</string>
     <string name="friday">S</string>
     <string name="saturday">S</string>
+    <string name="sun">Dom</string>
+    <string name="mon">Seg</string>
+    <string name="tue">Ter</string>
+    <string name="wed">Qua</string>
+    <string name="thu">Qui</string>
+    <string name="fri">Sex</string>
+    <string name="sat">Sab</string>
+    <string name="allDays">Todos os dias</string>
 </resources>

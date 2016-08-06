@@ -107,4 +107,19 @@ public class DateUtils {
 
         return portugueseDate;
     }
+
+    public static Date getDate(String timeToFormat) {
+
+        SimpleDateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        Date date = null;
+        if (timeToFormat != null) {
+            try {
+                date = iso8601Format.parse(timeToFormat);
+            } catch (ParseException e) {
+                date = null;
+            }
+        }
+        return date;
+    }
 }

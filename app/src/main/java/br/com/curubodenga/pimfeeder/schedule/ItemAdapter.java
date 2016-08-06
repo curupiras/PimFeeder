@@ -65,9 +65,9 @@ public class ItemAdapter extends SimpleCursorAdapter {
             boolean daySetted = toBoolean(daySettedInt);
             isAllUnsetted = isAllUnsetted && !daySetted;
             if (daySetted) {
-                dayTextView.setTextColor(Color.RED);
+                dayTextView.setTextColor(Color.BLUE);
             } else {
-                dayTextView.setTextColor(Color.BLACK);
+                dayTextView.setTextColor(Color.GRAY);
             }
         }
 

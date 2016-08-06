@@ -28,10 +28,6 @@ public class ScheduleActivity extends AppCompatActivity {
         dbHelper = new ScheduleDbAdapter(this);
         dbHelper.open();
 
-        //TODO: Remover códigos de teste.
-//        dbHelper.deleteAllSchedules();
-//        dbHelper.insertSomeSchedules();
-
         displayListView();
     }
 
@@ -68,15 +64,31 @@ public class ScheduleActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.schedulesScheduleActivityListView);
         listView.setAdapter(dataAdapter);
 
+        if (listView.getAdapter().getCount() < 1) {
+            openScheduleAdjustActivity();
+        }
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> listView, View view, int position, long id) {
-                openScheduleAdjustActivity(view);
+                Cursor cursor = (Cursor) listView.getItemAtPosition(position);
+                String key = cursor.getString(cursor.getColumnIndex(ScheduleDbAdapter.KEY_ROWID));
+                openScheduleAdjustActivity(key);
             }
         });
     }
 
+    public void openScheduleAdjustActivity(String key) {
+        Intent intent = new Intent(this, ScheduleAdjustActivity.class);
+        intent.putExtra(ScheduleDbAdapter.KEY_ROWID, key);
+        startActivity(intent);
+    }
+
     public void openScheduleAdjustActivity(View view) {
+        Intent intent = new Intent(this, ScheduleAdjustActivity.class);
+        startActivity(intent);
+    }
+    public void openScheduleAdjustActivity() {
         Intent intent = new Intent(this, ScheduleAdjustActivity.class);
         startActivity(intent);
     }

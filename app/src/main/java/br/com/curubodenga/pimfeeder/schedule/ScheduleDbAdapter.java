@@ -96,8 +96,13 @@ public class ScheduleDbAdapter {
         int friday = schedule.getRepeatFri() ? 1 : 0;
         int saturday = schedule.getRepeatSat() ? 1 : 0;
 
-        return createSchedule(schedule.getDate(), sunday, monday, tuesday, wednesday, thursday,
-                friday, saturday);
+        if (schedule.getId() == null) {
+            return createSchedule(schedule.getDate(), sunday, monday, tuesday, wednesday, thursday,
+                    friday, saturday);
+        } else {
+            return updateSchedule(schedule.getId(), schedule.getDate(), sunday, monday, tuesday,
+                    wednesday, thursday, friday, saturday);
+        }
     }
 
     private long createSchedule(Date date, int sunday, int monday, int tuesday, int wednesday, int
@@ -116,6 +121,26 @@ public class ScheduleDbAdapter {
         initialValues.put(KEY_SUNDAY, sunday);
 
         return mDb.insert(SQLITE_TABLE, null, initialValues);
+    }
+
+    private long updateSchedule(String id, Date date, int sunday, int monday, int tuesday, int wednesday, int
+            thursday, int friday, int saturday) {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        ContentValues initialValues = new ContentValues();
+        initialValues.put(KEY_DATE, dateFormat.format(date));
+        initialValues.put(KEY_MONDAY, monday);
+        initialValues.put(KEY_TUESDAY, tuesday);
+        initialValues.put(KEY_WEDNESDAY, wednesday);
+        initialValues.put(KEY_THURSDAY, thursday);
+        initialValues.put(KEY_FRIDAY, friday);
+        initialValues.put(KEY_SATURDAY, saturday);
+        initialValues.put(KEY_SUNDAY, sunday);
+
+        String where = KEY_ROWID + " = " + id;
+
+        return mDb.update(SQLITE_TABLE, initialValues, where, null);
     }
 
     public boolean deleteAllSchedules() {
@@ -139,6 +164,19 @@ public class ScheduleDbAdapter {
                         KEY_TUESDAY, KEY_WEDNESDAY, KEY_THURSDAY, KEY_FRIDAY, KEY_SATURDAY,
                         KEY_SUNDAY},
                 null, null, null, null, null);
+
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+    }
+
+    public Cursor fetchSchedule(String key) {
+
+        Cursor mCursor = mDb.query(SQLITE_TABLE, new String[]{KEY_ROWID, KEY_DATE, KEY_MONDAY,
+                        KEY_TUESDAY, KEY_WEDNESDAY, KEY_THURSDAY, KEY_FRIDAY, KEY_SATURDAY,
+                        KEY_SUNDAY},
+                KEY_ROWID + " = " + key, null, null, null, null);
 
         if (mCursor != null) {
             mCursor.moveToFirst();
