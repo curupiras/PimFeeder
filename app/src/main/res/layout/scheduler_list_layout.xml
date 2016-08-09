@@ -52,6 +52,7 @@
                 android:background="@android:color/transparent"
                 android:gravity="right"
                 android:textAlignment="gravity"
+                android:textStyle="bold"
                 android:text="X"/>
 
             <LinearLayout

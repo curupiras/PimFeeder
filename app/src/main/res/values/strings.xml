@@ -16,4 +16,6 @@
     <string name="fri">Sex</string>
     <string name="sat">Sab</string>
     <string name="allDays">Todos os dias</string>
+    <string name="action_schedule">Agendamento</string>
+    <string name="action_settings">Configurações</string>
 </resources>
