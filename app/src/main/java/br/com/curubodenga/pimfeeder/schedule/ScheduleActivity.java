@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import br.com.curubodenga.pimfeeder.R;
+import br.com.curubodenga.pimfeeder.settings.SettingsActivity;
 
 public class ScheduleActivity extends AppCompatActivity {
 
@@ -126,17 +127,14 @@ public class ScheduleActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                // User chose the "Settings" item, show the app settings UI...
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 return true;
 
             case R.id.action_schedule:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
                 return true;
 
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
 
         }
