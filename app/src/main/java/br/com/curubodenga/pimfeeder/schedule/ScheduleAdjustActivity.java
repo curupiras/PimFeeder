@@ -120,9 +120,9 @@ public class ScheduleAdjustActivity extends AppCompatActivity {
             weekDayString = weekDayString + ", ";
         }
 
-        if(isAllRepeatSet()){
+        if (isAllRepeatSet()) {
             return getResources().getString(R.string.allDays);
-        }else{
+        } else {
             return weekDayString.substring(0, weekDayString.length() - 2);
         }
     }
@@ -163,51 +163,6 @@ public class ScheduleAdjustActivity extends AppCompatActivity {
         TimePicker timePicker = (TimePicker) findViewById(R.id.scheduleAdjustTimePicker);
         timePicker.setVisibility(View.VISIBLE);
         timePicker.setIs24HourView(true);
-
-        LinearLayout linearLayout = (LinearLayout) timePicker.getChildAt(0);
-        linearLayout.setScaleX(1.5F);
-        linearLayout.setScaleY(1.5F);
-
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
-        );
-        params.setMargins(0, 0, 0, 0);
-
-//        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(linearLayout.getWidth()*2,
-// linearLayout.getHeight()*2));
-
-        LinearLayout timePickerLinearLayout = (LinearLayout) linearLayout.getChildAt(0);
-        timePickerLinearLayout.setScaleX(1);
-        timePickerLinearLayout.setScaleY(1);
-
-
-        TextView twoPointsTextView = (TextView) timePickerLinearLayout.getChildAt(1);
-        NumberPicker hour = (NumberPicker) timePickerLinearLayout.getChildAt(0);
-        NumberPicker minute = (NumberPicker) timePickerLinearLayout.getChildAt(2);
-        hour.setScaleX(1);
-        hour.setScaleY(1);
-//        hour.setLayoutParams(params);
-
-        minute.setScaleX(1);
-        minute.setScaleY(1);
-//
-//
-        TextView hourTextView = (TextView) ((NumberPicker) timePickerLinearLayout.getChildAt(0))
-                .getChildAt(0);
-        TextView minuteTextView = (TextView) ((NumberPicker) timePickerLinearLayout.getChildAt(2)
-        ).getChildAt(0);
-
-
-//        twoPointsTextView.setScaleX(1);
-//        twoPointsTextView.setScaleY(1);
-//        hourTextView.setScaleX(2);
-//        hourTextView.setScaleY(2);
-//        hourTextView.setLayoutParams(params);
-//        minuteTextView.setScaleX(2);
-//        minuteTextView.setScaleY(2);
-
 
         LinearLayout weekDayLayout = (LinearLayout) findViewById(R.id.weekDayLayout);
         weekDayLayout.setVisibility(View.VISIBLE);
