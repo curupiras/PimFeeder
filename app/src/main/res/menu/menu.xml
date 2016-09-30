@@ -9,9 +9,15 @@
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/action_settings"
-        android:icon="@drawable/ic_settings_white"
-        android:title="@string/action_settings"
+        android:id="@+id/action_bluetooth"
+        android:icon="@drawable/ic_bluetooth_desligado"
+        android:title="@string/action_bluetooth"
         app:showAsAction="ifRoom"/>
+
+    <!--<item-->
+    <!--android:id="@+id/action_settings"-->
+    <!--android:icon="@drawable/ic_settings_white"-->
+    <!--android:title="@string/action_settings"-->
+    <!--app:showAsAction="ifRoom"/>-->
 
 </menu>
