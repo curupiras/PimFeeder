@@ -131,12 +131,8 @@ public class ScheduleActivity extends AppCompatActivity {
     }
 
     public void openScheduleAdjustActivity() {
-        if (properties.isConnected()) {
-            Intent intent = new Intent(this, ScheduleAdjustActivity.class);
-            startActivity(intent);
-        } else {
-            bluetoothSync();
-        }
+        Intent intent = new Intent(this, ScheduleAdjustActivity.class);
+        startActivity(intent);
     }
 
 
