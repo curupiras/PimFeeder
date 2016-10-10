@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="PimFeederBlue">#3F51B5</color>
+    <color name="PimFeederGray">#878787</color>
+
+    <style name="MyDatePickerTheme" parent="@android:style/Widget.Holo.Light">
+        <item name="colorAccent">@color/PimFeederBlue</item>
+    </style>
+
+    <style name="MyTimePickerTheme" parent="@android:style/Widget.Holo.Light">
+        <item name="android:textSize">40sp</item>
+        <item name="android:textColor">@color/PimFeederGray</item>
+        <item name="android:textColorPrimary">@color/PimFeederGray</item>
+    </style>
+
+</resources>
