@@ -26,6 +26,8 @@
     <string name="already_connected">Conectado ao Pimfeeder.</string>
     <string name="bluetooth_device_name">HC-06</string>
     <string name="bluetooth_device_uuid">00001101-0000-1000-8000-00805F9B34FB</string>
+    <string name="loadingWindowName">Aguarde</string>
+    <string name="connectingMessage">Conectando-se ao PimFeeder...</string>
 
     <!-- Strings related to Settings -->
 

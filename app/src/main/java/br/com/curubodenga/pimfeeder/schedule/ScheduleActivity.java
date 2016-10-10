@@ -1,10 +1,14 @@
 package br.com.curubodenga.pimfeeder.schedule;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,25 +28,26 @@ import java.util.Set;
 import java.util.UUID;
 
 import br.com.curubodenga.pimfeeder.R;
+import br.com.curubodenga.pimfeeder.bluetooth.BluetoothConnectThread;
+import br.com.curubodenga.pimfeeder.bluetooth.Properties;
 
 public class ScheduleActivity extends AppCompatActivity {
 
     private ScheduleDbAdapter dbHelper;
     private SimpleCursorAdapter dataAdapter;
     private final static int REQUEST_ENABLE_BT = 1;
-    private boolean isConnected;
     private Menu menu;
+    private ProgressDialog progressDialog;
+    private Properties properties;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        properties = Properties.getInstance();
         setContentView(R.layout.activity_schedule);
-
-        isConnected = false;
-
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-
+        manageBluetoothConnection();
         dbHelper = new ScheduleDbAdapter(this);
         dbHelper.open();
 
@@ -54,6 +59,7 @@ public class ScheduleActivity extends AppCompatActivity {
         this.menu = menu;
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
+        updateBluetoothIcon();
 
         return true;
     }
@@ -106,114 +112,58 @@ public class ScheduleActivity extends AppCompatActivity {
     }
 
     public void openScheduleAdjustActivity(String key) {
-        Intent intent = new Intent(this, ScheduleAdjustActivity.class);
-        intent.putExtra(ScheduleDbAdapter.KEY_ROWID, key);
-        startActivity(intent);
+        if (properties.isConnected()) {
+            Intent intent = new Intent(this, ScheduleAdjustActivity.class);
+            intent.putExtra(ScheduleDbAdapter.KEY_ROWID, key);
+            startActivity(intent);
+        } else {
+            bluetoothSync();
+        }
     }
 
     public void openScheduleAdjustActivity(View view) {
-        Intent intent = new Intent(this, ScheduleAdjustActivity.class);
-        startActivity(intent);
+        if (properties.isConnected()) {
+            Intent intent = new Intent(this, ScheduleAdjustActivity.class);
+            startActivity(intent);
+        } else {
+            bluetoothSync();
+        }
     }
 
     public void openScheduleAdjustActivity() {
-        Intent intent = new Intent(this, ScheduleAdjustActivity.class);
-        startActivity(intent);
+        if (properties.isConnected()) {
+            Intent intent = new Intent(this, ScheduleAdjustActivity.class);
+            startActivity(intent);
+        } else {
+            bluetoothSync();
+        }
     }
 
 
     public void deleteItem(View view) {
-        ScheduleDbAdapter scheduleDbAdapter = new ScheduleDbAdapter(this);
-        scheduleDbAdapter.open();
+        if (properties.isConnected()) {
+            ScheduleDbAdapter scheduleDbAdapter = new ScheduleDbAdapter(this);
+            scheduleDbAdapter.open();
 
-        View linearLayout = (View) view.getParent().getParent().getParent();
-        TextView scheduleItemIdTextView = (TextView) linearLayout.findViewById(R.id.scheduleItemId);
-        String itemId = scheduleItemIdTextView.getText().toString();
+            View linearLayout = (View) view.getParent().getParent().getParent();
+            TextView scheduleItemIdTextView = (TextView) linearLayout.findViewById(R.id
+                    .scheduleItemId);
+            String itemId = scheduleItemIdTextView.getText().toString();
 
-        scheduleDbAdapter.deleteItem(itemId);
-        displayListView();
+            scheduleDbAdapter.deleteItem(itemId);
+            displayListView();
+        } else {
+            bluetoothSync();
+        }
     }
 
     public void bluetoothSync() {
-        Context context = getApplicationContext();
-        CharSequence text;
-        Toast toast;
-
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        if (mBluetoothAdapter == null) {
-            text = getResources().getString(R.string.adaptador_bluetooth_nao_encontrado);
-            toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
-            toast.show();
-        }
-
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        }
-
-        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-        // If there are paired devices
-        if (pairedDevices.size() > 0) {
-            // Loop through paired devices
-            for (BluetoothDevice device : pairedDevices) {
-                // Add the name and address to an array adapter to show in a ListView
-                text = device.getName();
-                if (text.equals(getResources().getString(R.string.bluetooth_device_name))) {
-                    bluetoothConnect(device);
-                    break;
-                }
-            }
-        }
+        String loadingWindowName = getResources().getString(R.string.loadingWindowName);
+        String msg = getResources().getString(R.string.connectingMessage);
+        progressDialog = ProgressDialog.show(this, loadingWindowName, msg);
+        Thread bluetoothConnectThread = new BluetoothConnectThread(this, this.progressDialog);
+        bluetoothConnectThread.start();
     }
-
-    public void bluetoothConnect(BluetoothDevice device) {
-        Context context = getApplicationContext();
-        String msg;
-        Toast toast;
-
-        BluetoothSocket socket = null;
-
-        try {
-            String uuid = getResources().getString(R.string.bluetooth_device_uuid);
-            socket = device.createRfcommSocketToServiceRecord(UUID.fromString(uuid));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (isConnected) {
-                msg = getResources().getString(R.string.already_connected);
-                toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT);
-                toast.show();
-        } else {
-            try {
-                BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                mBluetoothAdapter.cancelDiscovery();
-                socket.connect();
-                isConnected = true;
-            } catch (IOException e) {
-                isConnected = false;
-                try {
-                    socket.close();
-                } catch (IOException closeException) {
-                    closeException.printStackTrace();
-                }
-                msg = getResources().getString(R.string.problema_conectar_bluetooth);
-                toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT);
-                toast.show();
-            }
-            if (isConnected) {
-                msg = getResources().getString(R.string.sucesso_conectar_bluetooth);
-                toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT);
-                toast.show();
-            }
-        }
-    }
-
-
-//        BluetoothConnectThread thread = new BluetoothConnectThread(device);
-//        thread.run();
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -236,60 +186,144 @@ public class ScheduleActivity extends AppCompatActivity {
         }
     }
 
-    private class BluetoothConnectThread extends Thread {
-        private final BluetoothSocket mmSocket;
-        private final BluetoothDevice mmDevice;
+//    private class BluetoothConnectThread extends Thread {
+//        private BluetoothAdapter mBluetoothAdapter;
+//        private BluetoothSocket socket;
+//        private Activity activity;
+//
+//        public BluetoothConnectThread(Activity activity) {
+//            this.activity = activity;
+//        }
+//
+//        public void run() {
+//            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//
+//            if (mBluetoothAdapter == null) {
+//                activity.runOnUiThread(new Runnable() {
+//                    public void run() {
+//                        String msg = getResources().getString(R.string
+//                                .adaptador_bluetooth_nao_encontrado);
+//                        Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//            }
+//
+//            if (!mBluetoothAdapter.isEnabled()) {
+//                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+//            }
+//
+//            Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+//            // If there are paired devices
+//            if (pairedDevices.size() > 0) {
+//                // Loop through paired devices
+//                for (BluetoothDevice device : pairedDevices) {
+//                    // Add the name and address to an array adapter to show in a ListView
+//                    String text = device.getName();
+//                    if (text.equals(getResources().getString(R.string.bluetooth_device_name))) {
+//                        bluetoothConnect(device);
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//
+//        public void bluetoothConnect(BluetoothDevice device) {
+//            if (properties.isConnected()) {
+//                activity.runOnUiThread(new Runnable() {
+//                    public void run() {
+//                        String msg = getResources().getString(R.string.already_connected);
+//                        Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//            } else {
+//                try {
+//                    BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//                    String uuid = getResources().getString(R.string.bluetooth_device_uuid);
+//                    socket = device.createRfcommSocketToServiceRecord(UUID.fromString(uuid));
+//                    mBluetoothAdapter.cancelDiscovery();
+//                    String msg;
+//                    Toast toast;
+//                    socket.connect();
+//                } catch (IOException connectException) {
+//                    try {
+//                        socket.close();
+//                    } catch (IOException closeException) {
+//                        closeException.printStackTrace();
+//                    }
+//                    activity.runOnUiThread(new Runnable() {
+//                        public void run() {
+//                            String msg = getResources().getString(R.string
+//                                    .problema_conectar_bluetooth);
+//                            Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//                }
+//                activity.runOnUiThread(new Runnable() {
+//                    public void run() {
+//                        String msg = getResources().getString(R.string
+// .sucesso_conectar_bluetooth);
+//                        Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//
+////             TODO: terminar essa função
+////            manageConnectedSocket(mmSocket);
+//            }
+//            progressDialog.dismiss();
+//        }
+//
+//        /**
+//         * Will cancel an in-progress connection, and close the socket
+//         */
+//        public void cancel() {
+//            try {
+//                socket.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
-        public BluetoothConnectThread(BluetoothDevice device) {
+    //The BroadcastReceiver that listens for bluetooth broadcasts
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
-            BluetoothSocket tmp = null;
-            mmDevice = device;
-
-            try {
-                String uuid = getResources().getString(R.string.bluetooth_device_uuid);
-                tmp = device.createRfcommSocketToServiceRecord(UUID.fromString(uuid));
-            } catch (IOException e) {
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                //Device found
+            } else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
+                properties.setConnected(true);
+                String msg = getResources().getString(R.string.sucesso_conectar_bluetooth);
+                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                updateBluetoothIcon();
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                //Done searching
+            } else if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
+                //Device is about to disconnect
+            } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
+                properties.setConnected(false);
+                updateBluetoothIcon();
             }
-            mmSocket = tmp;
         }
+    };
 
-        public void run() {
-            BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            mBluetoothAdapter.cancelDiscovery();
-            Context context = getApplicationContext();
-            String msg;
-            Toast toast;
-
-            try {
-                mmSocket.connect();
-            } catch (IOException connectException) {
-                try {
-                    mmSocket.close();
-                } catch (IOException closeException) {
-                    closeException.printStackTrace();
-                }
-                msg = getResources().getString(R.string.problema_conectar_bluetooth);
-                toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT);
-                toast.show();
-            }
-            msg = getResources().getString(R.string.sucesso_conectar_bluetooth);
-            toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT);
-            toast.show();
-
-//             TODO: terminar essa função
-//            manageConnectedSocket(mmSocket);
-        }
-
-        /**
-         * Will cancel an in-progress connection, and close the socket
-         */
-        public void cancel() {
-            try {
-                mmSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    private void manageBluetoothConnection() {
+        IntentFilter filter1 = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
+        IntentFilter filter2 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+        IntentFilter filter3 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        this.registerReceiver(mReceiver, filter1);
+        this.registerReceiver(mReceiver, filter2);
+        this.registerReceiver(mReceiver, filter3);
     }
 
+    private void updateBluetoothIcon() {
+        if (properties.isConnected()) {
+            menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_bluetooth_ligado));
+        } else {
+            menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_bluetooth_desligado));
+        }
+    }
 }

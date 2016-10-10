@@ -20,6 +20,7 @@ public class ItemAdapter extends SimpleCursorAdapter {
 
     private Context mContext;
     private Context appContext;
+    private boolean enabled;
     private int layout;
     private Cursor cursor;
     private final LayoutInflater inflater;
@@ -34,6 +35,7 @@ public class ItemAdapter extends SimpleCursorAdapter {
         this.cursor = c;
         this.from = from;
         this.to = to;
+        enabled = true;
     }
 
     @Override
@@ -106,6 +108,14 @@ public class ItemAdapter extends SimpleCursorAdapter {
         } else {
             return false;
         }
+    }
+
+    public boolean isEnabled(int position) {
+       return enabled;
+    }
+
+    public void setEnabled(boolean isEnabled){
+        enabled = isEnabled;
     }
 
 }

@@ -1,5 +1,6 @@
 package br.com.curubodenga.pimfeeder.schedule;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -15,15 +16,20 @@ import android.widget.TimePicker;
 import java.util.Calendar;
 
 import br.com.curubodenga.pimfeeder.R;
+import br.com.curubodenga.pimfeeder.bluetooth.BluetoothConnectThread;
+import br.com.curubodenga.pimfeeder.bluetooth.Properties;
 import br.com.curubodenga.pimfeeder.utils.DateUtils;
 
 public class ScheduleAdjustActivity extends AppCompatActivity {
 
     Schedule schedule;
+    private Properties properties;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        properties = Properties.getInstance();
         setContentView(R.layout.activity_schedule_adjust);
 
         Bundle extras = getIntent().getExtras();
@@ -303,18 +309,31 @@ public class ScheduleAdjustActivity extends AppCompatActivity {
     }
 
     public void save(View view) {
-        TimePicker timePicker = (TimePicker) findViewById(R.id.scheduleAdjustTimePicker);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(this.schedule.getDate());
-        calendar.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
-        calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
+        if (properties.isConnected()) {
+            TimePicker timePicker = (TimePicker) findViewById(R.id.scheduleAdjustTimePicker);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(this.schedule.getDate());
+            calendar.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
+            calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
 
-        this.schedule.setDate(calendar.getTime());
+            this.schedule.setDate(calendar.getTime());
 
-        ScheduleDbAdapter scheduleDbAdapter = new ScheduleDbAdapter(this);
-        scheduleDbAdapter.open();
-        scheduleDbAdapter.createSchedule(this.schedule);
-        Intent intent = new Intent(this, ScheduleActivity.class);
-        startActivity(intent);
+            ScheduleDbAdapter scheduleDbAdapter = new ScheduleDbAdapter(this);
+            scheduleDbAdapter.open();
+            scheduleDbAdapter.createSchedule(this.schedule);
+            Intent intent = new Intent(this, ScheduleActivity.class);
+            startActivity(intent);
+        } else {
+            bluetoothSync();
+        }
     }
+
+    public void bluetoothSync() {
+        String loadingWindowName = getResources().getString(R.string.loadingWindowName);
+        String msg = getResources().getString(R.string.connectingMessage);
+        progressDialog = ProgressDialog.show(this, loadingWindowName, msg);
+        Thread bluetoothConnectThread = new BluetoothConnectThread(this, progressDialog);
+        bluetoothConnectThread.start();
+    }
+
 }
