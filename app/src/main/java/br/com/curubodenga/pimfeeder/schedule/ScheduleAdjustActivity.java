@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.DatePicker;
@@ -17,6 +18,7 @@ import java.util.Calendar;
 
 import br.com.curubodenga.pimfeeder.R;
 import br.com.curubodenga.pimfeeder.bluetooth.BluetoothConnectThread;
+import br.com.curubodenga.pimfeeder.bluetooth.BluetoothConnectedThread;
 import br.com.curubodenga.pimfeeder.bluetooth.Properties;
 import br.com.curubodenga.pimfeeder.utils.DateUtils;
 
@@ -321,11 +323,30 @@ public class ScheduleAdjustActivity extends AppCompatActivity {
             ScheduleDbAdapter scheduleDbAdapter = new ScheduleDbAdapter(this);
             scheduleDbAdapter.open();
             scheduleDbAdapter.createSchedule(this.schedule);
+
+            sendSchedulesByBluetooth(scheduleDbAdapter);
+
+            //TODO: Essa parte tem que ser chamada ao receber a resposta do PimFeeder e fechar a janela progressDialog
             Intent intent = new Intent(this, ScheduleActivity.class);
             startActivity(intent);
         } else {
             bluetoothSync();
         }
+    }
+
+    private void sendSchedulesByBluetooth(ScheduleDbAdapter adapter) {
+        BluetoothConnectedThread bluetooth = new BluetoothConnectedThread(BluetoothConnectThread
+                .socket);
+        Cursor cursor = adapter.fetchAllSchedules();
+
+
+        String loadingWindowName = getResources().getString(R.string.loadingWindowName);
+        String msg = getResources().getString(R.string.sendingMessage);
+        progressDialog = ProgressDialog.show(this, loadingWindowName, msg);
+
+        bluetooth.setProgressDialog(progressDialog);
+        bluetooth.setCursor(cursor);
+        bluetooth.start();
     }
 
     public void bluetoothSync() {

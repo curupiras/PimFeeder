@@ -19,7 +19,7 @@ public class BluetoothConnectThread extends Thread {
     ProgressDialog progressDialog;
     private Properties properties;
     private BluetoothAdapter mBluetoothAdapter;
-    private BluetoothSocket socket;
+    public static BluetoothSocket socket;
     private Activity activity;
 
     public BluetoothConnectThread(Activity activity, ProgressDialog progressDialog) {

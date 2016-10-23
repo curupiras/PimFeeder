@@ -2,6 +2,7 @@ package br.com.curubodenga.pimfeeder.schedule;
 
 import android.database.Cursor;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import br.com.curubodenga.pimfeeder.utils.DateUtils;
@@ -12,6 +13,32 @@ import br.com.curubodenga.pimfeeder.utils.DateUtils;
 public class Schedule {
 
     public static final String SCHEDULE = "SCHEDULE";
+    public static final int SCHEDULE_BYTE_SIZE = 19;
+
+    public static final int DAY_POSITION_1 = 0;
+    public static final int DAY_POSITION_2 = 1;
+
+    public static final int MONTH_POSITION_1 = 2;
+    public static final int MONTH_POSITION_2 = 3;
+
+    public static final int YAR_POSITION_1 = 4;
+    public static final int YAR_POSITION_2 = 5;
+    public static final int YAR_POSITION_3 = 6;
+    public static final int YAR_POSITION_4 = 7;
+
+    public static final int HOUR_POSITION_1 = 8;
+    public static final int HOUR_POSITION_2 = 9;
+
+    public static final int MINUTE_POSITION_1 = 10;
+    public static final int MINUTE_POSITION_2 = 11;
+
+    public static final int WEEK_DAY_POSITION_SUNDAY = 12;
+    public static final int WEEK_DAY_POSITION_MONDAY = 13;
+    public static final int WEEK_DAY_POSITION_TUESDAY = 14;
+    public static final int WEEK_DAY_POSITION_WEDNESDAY = 15;
+    public static final int WEEK_DAY_POSITION_THURSDAY = 16;
+    public static final int WEEK_DAY_POSITION_FRIDAY = 17;
+    public static final int WEEK_DAY_POSITION_SATURDAY = 18;
 
     private String id;
     private Date date;
@@ -197,5 +224,66 @@ public class Schedule {
         this.repeatFri = false;
         this.repeatSat = false;
         this.repeatSun = false;
+    }
+
+    public byte[] getBytes() {
+
+        Date date = getDate();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+
+        int day;
+        int month;
+        int year;
+
+        if (anyRepeatSetted()) {
+            day = 0;
+            month = 0;
+            year = 0;
+        } else {
+
+            day = cal.get(Calendar.DAY_OF_MONTH);
+            month = cal.get(Calendar.MONTH) + 1;
+            year = cal.get(Calendar.YEAR);
+        }
+
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+//        if(cal.get(Calendar.AM_PM) == Calendar.PM){
+//            hour += 12;
+//        }
+        int minute = cal.get(Calendar.MINUTE);
+
+        byte[] bytes = new byte[SCHEDULE_BYTE_SIZE];
+        bytes[DAY_POSITION_1] = (byte) Character.forDigit(day / 10, 10);
+        bytes[DAY_POSITION_2] = (byte) Character.forDigit(day % 10, 10);
+
+        bytes[MONTH_POSITION_1] = (byte) Character.forDigit(month / 10, 10);
+        bytes[MONTH_POSITION_2] = (byte) Character.forDigit(month % 10, 10);
+
+        bytes[YAR_POSITION_1] = (byte) Character.forDigit(year / 1000, 10);
+        bytes[YAR_POSITION_2] = (byte) Character.forDigit(year % 1000 / 100, 10);
+        bytes[YAR_POSITION_3] = (byte) Character.forDigit(year % 1000 % 100 / 10, 10);
+        bytes[YAR_POSITION_4] = (byte) Character.forDigit(year % 1000 % 100 % 10, 10);
+
+        bytes[HOUR_POSITION_1] = (byte) Character.forDigit(hour / 10, 10);
+        bytes[HOUR_POSITION_2] = (byte) Character.forDigit(hour % 10, 10);
+
+        bytes[MINUTE_POSITION_1] = (byte) Character.forDigit(minute / 10, 10);
+        bytes[MINUTE_POSITION_2] = (byte) Character.forDigit(minute % 10, 10);
+
+        bytes[WEEK_DAY_POSITION_SUNDAY] = (byte) (repeatSun ? '1' : '0');
+        bytes[WEEK_DAY_POSITION_MONDAY] = (byte) (repeatMon ? '1' : '0');
+        bytes[WEEK_DAY_POSITION_TUESDAY] = (byte) (repeatTue ? '1' : '0');
+        bytes[WEEK_DAY_POSITION_WEDNESDAY] = (byte) (repeatWed ? '1' : '0');
+        bytes[WEEK_DAY_POSITION_THURSDAY] = (byte) (repeatThu ? '1' : '0');
+        bytes[WEEK_DAY_POSITION_FRIDAY] = (byte) (repeatFri ? '1' : '0');
+        bytes[WEEK_DAY_POSITION_SATURDAY] = (byte) (repeatSat ? '1' : '0');
+
+        return bytes;
+    }
+
+    private boolean anyRepeatSetted() {
+        return repeatSun || repeatMon || repeatTue || repeatWed || repeatThu || repeatFri ||
+                repeatSat;
     }
 }
