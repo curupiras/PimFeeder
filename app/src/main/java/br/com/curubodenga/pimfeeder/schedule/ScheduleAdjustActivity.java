@@ -13,7 +13,9 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 
 import br.com.curubodenga.pimfeeder.R;
@@ -22,7 +24,7 @@ import br.com.curubodenga.pimfeeder.bluetooth.BluetoothConnectedThread;
 import br.com.curubodenga.pimfeeder.bluetooth.Properties;
 import br.com.curubodenga.pimfeeder.utils.DateUtils;
 
-public class ScheduleAdjustActivity extends AppCompatActivity {
+public class ScheduleAdjustActivity extends PimfeederActivity  {
 
     Schedule schedule;
     private Properties properties;
@@ -327,16 +329,19 @@ public class ScheduleAdjustActivity extends AppCompatActivity {
             sendSchedulesByBluetooth(scheduleDbAdapter);
 
             //TODO: Essa parte tem que ser chamada ao receber a resposta do PimFeeder e fechar a janela progressDialog
-            Intent intent = new Intent(this, ScheduleActivity.class);
-            startActivity(intent);
+
         } else {
             bluetoothSync();
         }
     }
 
+    public void goToTargetActivity(){
+        Intent intent = new Intent(this, ScheduleActivity.class);
+        startActivity(intent);
+    }
+
     private void sendSchedulesByBluetooth(ScheduleDbAdapter adapter) {
-        BluetoothConnectedThread bluetooth = new BluetoothConnectedThread(BluetoothConnectThread
-                .socket);
+
         Cursor cursor = adapter.fetchAllSchedules();
 
 
@@ -344,7 +349,8 @@ public class ScheduleAdjustActivity extends AppCompatActivity {
         String msg = getResources().getString(R.string.sendingMessage);
         progressDialog = ProgressDialog.show(this, loadingWindowName, msg);
 
-        bluetooth.setProgressDialog(progressDialog);
+        BluetoothConnectedThread bluetooth = new BluetoothConnectedThread(BluetoothConnectThread
+                .socket,this,progressDialog);
         bluetooth.setCursor(cursor);
         bluetooth.start();
     }
