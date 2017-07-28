@@ -13,7 +13,7 @@ import br.com.curubodenga.pimfeeder.utils.DateUtils;
 public class Schedule {
 
     public static final String SCHEDULE = "SCHEDULE";
-    public static final int SCHEDULE_BYTE_SIZE = 19;
+    public static final int SCHEDULE_BYTE_SIZE = 24;
 
     public static final int DAY_POSITION_1 = 0;
     public static final int DAY_POSITION_2 = 1;
@@ -40,6 +40,17 @@ public class Schedule {
     public static final int WEEK_DAY_POSITION_FRIDAY = 17;
     public static final int WEEK_DAY_POSITION_SATURDAY = 18;
 
+    public static final int TIME_POSITION_1 = 19;
+    public static final int TIME_POSITION_2 = 20;
+    public static final int TIME_POSITION_3 = 21;
+
+    public static final int AUDIO_POSITION_1 = 22;
+    public static final int AUDIO_POSITION_2 = 23;
+
+    public static final int DEFAULT_AUDIO = 0;
+    public static final int DEFAULT_TIME = 15;
+
+
     private String id;
     private Date date;
     private Boolean repeatMon;
@@ -49,6 +60,8 @@ public class Schedule {
     private Boolean repeatFri;
     private Boolean repeatSat;
     private Boolean repeatSun;
+    private int audio;
+    private int time;
 
     public Schedule() {
         this.date = new Date();
@@ -60,6 +73,8 @@ public class Schedule {
         this.repeatSat = true;
         this.repeatSun = true;
         this.id = null;
+        this.audio = DEFAULT_AUDIO;
+        this.time = DEFAULT_TIME;
     }
 
     public Date getDate() {
@@ -124,6 +139,22 @@ public class Schedule {
 
     public void setRepeatSun(Boolean repeatSun) {
         this.repeatSun = repeatSun;
+    }
+
+    public int getAudio() {
+        return audio;
+    }
+
+    public void setAudio(int audio) {
+        this.audio = audio;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
     }
 
     public void mondayToggle() {
@@ -194,6 +225,8 @@ public class Schedule {
         int friday = cursor.getInt(cursor.getColumnIndex(ScheduleDbAdapter.KEY_FRIDAY));
         int saturday = cursor.getInt(cursor.getColumnIndex(ScheduleDbAdapter.KEY_SATURDAY));
         int sunday = cursor.getInt(cursor.getColumnIndex(ScheduleDbAdapter.KEY_SUNDAY));
+        int time = cursor.getInt(cursor.getColumnIndex(ScheduleDbAdapter.KEY_TIME));
+        int audio = cursor.getInt(cursor.getColumnIndex(ScheduleDbAdapter.KEY_AUDIO));
 
         schedule.setDate(DateUtils.getDate(date));
         schedule.setId(id);
@@ -204,6 +237,8 @@ public class Schedule {
         schedule.setRepeatFri(friday == 1);
         schedule.setRepeatSat(saturday == 1);
         schedule.setRepeatSun(sunday == 1);
+        schedule.setTime(time);
+        schedule.setAudio(audio);
 
         return schedule;
     }
@@ -241,7 +276,6 @@ public class Schedule {
             month = 0;
             year = 0;
         } else {
-
             day = cal.get(Calendar.DAY_OF_MONTH);
             month = cal.get(Calendar.MONTH) + 1;
             year = cal.get(Calendar.YEAR);
@@ -278,6 +312,13 @@ public class Schedule {
         bytes[WEEK_DAY_POSITION_THURSDAY] = (byte) (repeatThu ? '1' : '0');
         bytes[WEEK_DAY_POSITION_FRIDAY] = (byte) (repeatFri ? '1' : '0');
         bytes[WEEK_DAY_POSITION_SATURDAY] = (byte) (repeatSat ? '1' : '0');
+
+        bytes[TIME_POSITION_1] = (byte) Character.forDigit(time / 100, 10);
+        bytes[TIME_POSITION_2] = (byte) Character.forDigit(time % 100 / 10, 10);
+        bytes[TIME_POSITION_3] = (byte) Character.forDigit(time % 100 % 10, 10);
+
+        bytes[AUDIO_POSITION_1] = (byte) Character.forDigit(audio / 10, 10);
+        bytes[AUDIO_POSITION_2] = (byte) Character.forDigit(audio % 10, 10);
 
         return bytes;
     }
