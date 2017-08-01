@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import br.com.curubodenga.pimfeeder.R;
+import br.com.curubodenga.pimfeeder.schedule.PimfeederActivity;
 
 public class BluetoothConnectThread extends Thread {
     private final static int REQUEST_ENABLE_BT = 1;
@@ -20,9 +21,9 @@ public class BluetoothConnectThread extends Thread {
     private Properties properties;
     private BluetoothAdapter mBluetoothAdapter;
     public static BluetoothSocket socket;
-    private Activity activity;
+    private PimfeederActivity activity;
 
-    public BluetoothConnectThread(Activity activity, ProgressDialog progressDialog) {
+    public BluetoothConnectThread(PimfeederActivity activity, ProgressDialog progressDialog) {
         this.activity = activity;
         this.properties = Properties.getInstance();
         this.progressDialog = progressDialog;
@@ -64,12 +65,8 @@ public class BluetoothConnectThread extends Thread {
 
     public void bluetoothConnect(BluetoothDevice device) {
         if (properties.isConnected()) {
-            activity.runOnUiThread(new Runnable() {
-                public void run() {
-                    String msg = activity.getResources().getString(R.string.already_connected);
-                    Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
-                }
-            });
+            Thread bluetoothDateThread = new BluetoothDateThread(socket, activity, progressDialog);
+            bluetoothDateThread.start();
         } else {
             try {
                 BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -79,12 +76,18 @@ public class BluetoothConnectThread extends Thread {
                 String msg;
                 Toast toast;
                 socket.connect();
+
+                Thread bluetoothDateThread = new BluetoothDateThread(socket, activity,
+                        progressDialog);
+                bluetoothDateThread.start();
+
             } catch (IOException connectException) {
                 try {
                     socket.close();
                 } catch (IOException closeException) {
                     closeException.printStackTrace();
                 }
+                progressDialog.dismiss();
                 activity.runOnUiThread(new Runnable() {
                     public void run() {
                         String msg = activity.getResources().getString(R.string
@@ -96,7 +99,6 @@ public class BluetoothConnectThread extends Thread {
 //             TODO: terminar essa função
 //            manageConnectedSocket(mmSocket);
         }
-        progressDialog.dismiss();
     }
 
     /**

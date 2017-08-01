@@ -5,22 +5,17 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 
 import br.com.curubodenga.pimfeeder.R;
 import br.com.curubodenga.pimfeeder.bluetooth.BluetoothConnectThread;
-import br.com.curubodenga.pimfeeder.bluetooth.BluetoothConnectedThread;
+import br.com.curubodenga.pimfeeder.bluetooth.BluetoothScheduleThread;
 import br.com.curubodenga.pimfeeder.bluetooth.Properties;
 import br.com.curubodenga.pimfeeder.utils.DateUtils;
 
@@ -313,7 +308,7 @@ public class ScheduleAdjustActivity extends PimfeederActivity  {
     }
 
     public void save(View view) {
-        if (properties.isConnected()) {
+        if (properties.isConnectedAndDateSync()) {
             TimePicker timePicker = (TimePicker) findViewById(R.id.scheduleAdjustTimePicker);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(this.schedule.getDate());
@@ -349,7 +344,7 @@ public class ScheduleAdjustActivity extends PimfeederActivity  {
         String msg = getResources().getString(R.string.sendingMessage);
         progressDialog = ProgressDialog.show(this, loadingWindowName, msg);
 
-        BluetoothConnectedThread bluetooth = new BluetoothConnectedThread(BluetoothConnectThread
+        BluetoothScheduleThread bluetooth = new BluetoothScheduleThread(BluetoothConnectThread
                 .socket,this,progressDialog);
         bluetooth.setCursor(cursor);
         bluetooth.start();

@@ -1,16 +1,13 @@
 package br.com.curubodenga.pimfeeder.schedule;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -23,13 +20,9 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.util.Set;
-import java.util.UUID;
-
 import br.com.curubodenga.pimfeeder.R;
 import br.com.curubodenga.pimfeeder.bluetooth.BluetoothConnectThread;
-import br.com.curubodenga.pimfeeder.bluetooth.BluetoothConnectedThread;
+import br.com.curubodenga.pimfeeder.bluetooth.BluetoothScheduleThread;
 import br.com.curubodenga.pimfeeder.bluetooth.Properties;
 
 public class ScheduleActivity extends PimfeederActivity {
@@ -113,7 +106,7 @@ public class ScheduleActivity extends PimfeederActivity {
     }
 
     public void openScheduleAdjustActivity(String key) {
-        if (properties.isConnected()) {
+        if (properties.isConnectedAndDateSync()) {
             Intent intent = new Intent(this, ScheduleAdjustActivity.class);
             intent.putExtra(ScheduleDbAdapter.KEY_ROWID, key);
             startActivity(intent);
@@ -123,7 +116,7 @@ public class ScheduleActivity extends PimfeederActivity {
     }
 
     public void openScheduleAdjustActivity(View view) {
-        if (properties.isConnected()) {
+        if (properties.isConnectedAndDateSync()) {
             Intent intent = new Intent(this, ScheduleAdjustActivity.class);
             startActivity(intent);
         } else {
@@ -138,7 +131,7 @@ public class ScheduleActivity extends PimfeederActivity {
 
 
     public void deleteItem(View view) {
-        if (properties.isConnected()) {
+        if (properties.isConnectedAndDateSync()) {
             ScheduleDbAdapter scheduleDbAdapter = new ScheduleDbAdapter(this);
             scheduleDbAdapter.open();
 
@@ -196,9 +189,6 @@ public class ScheduleActivity extends PimfeederActivity {
                 //Device found
             } else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
                 properties.setConnected(true);
-                String msg = getResources().getString(R.string.sucesso_conectar_bluetooth);
-                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-                updateBluetoothIcon();
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 //Done searching
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
@@ -219,8 +209,8 @@ public class ScheduleActivity extends PimfeederActivity {
         this.registerReceiver(mReceiver, filter3);
     }
 
-    private void updateBluetoothIcon() {
-        if (properties.isConnected()) {
+    public void updateBluetoothIcon() {
+        if (properties.isConnectedAndDateSync()) {
             menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_bluetooth_ligado));
         } else {
             menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_bluetooth_desligado));
@@ -236,7 +226,7 @@ public class ScheduleActivity extends PimfeederActivity {
         String msg = getResources().getString(R.string.sendingMessage);
         progressDialog = ProgressDialog.show(this, loadingWindowName, msg);
 
-        BluetoothConnectedThread bluetooth = new BluetoothConnectedThread(BluetoothConnectThread
+        BluetoothScheduleThread bluetooth = new BluetoothScheduleThread(BluetoothConnectThread
                 .socket,this,progressDialog);
         bluetooth.setCursor(cursor);
         bluetooth.start();
