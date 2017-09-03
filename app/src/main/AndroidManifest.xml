@@ -17,8 +17,10 @@
         <activity android:name=".schedule.ScheduleAdjustActivity">
         </activity>
         <activity
-            android:name=".settings.SettingsActivity"
-            android:label="@string/title_activity_settings">
+            android:name=".period.PeriodActivity">
+        </activity>
+        <activity
+            android:name=".period.PeriodAdjustActivity">
         </activity>
     </application>
 

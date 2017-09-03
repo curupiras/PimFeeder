@@ -1,4 +1,4 @@
-package br.com.curubodenga.pimfeeder.schedule;
+package br.com.curubodenga.pimfeeder.period;
 
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -18,17 +18,18 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import br.com.curubodenga.pimfeeder.R;
 import br.com.curubodenga.pimfeeder.bluetooth.BluetoothConnectThread;
-import br.com.curubodenga.pimfeeder.bluetooth.BluetoothScheduleThread;
 import br.com.curubodenga.pimfeeder.bluetooth.Properties;
-import br.com.curubodenga.pimfeeder.period.PeriodActivity;
+import br.com.curubodenga.pimfeeder.schedule.ItemAdapter;
+import br.com.curubodenga.pimfeeder.schedule.PimfeederActivity;
+import br.com.curubodenga.pimfeeder.schedule.ScheduleActivity;
+import br.com.curubodenga.pimfeeder.schedule.ScheduleDbAdapter;
 
-public class ScheduleActivity extends PimfeederActivity {
+public class PeriodActivity extends PimfeederActivity {
 
-    private ScheduleDbAdapter dbHelper;
+    private PeriodDbAdapter dbHelper;
     private SimpleCursorAdapter dataAdapter;
     private final static int REQUEST_ENABLE_BT = 1;
     private Menu menu;
@@ -39,11 +40,11 @@ public class ScheduleActivity extends PimfeederActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         properties = Properties.getInstance();
-        setContentView(R.layout.activity_schedule);
+        setContentView(R.layout.activity_period);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         manageBluetoothConnection();
-        dbHelper = new ScheduleDbAdapter(this);
+        dbHelper = new PeriodDbAdapter(this);
         dbHelper.open();
 
         displayListView();
@@ -60,94 +61,70 @@ public class ScheduleActivity extends PimfeederActivity {
     }
 
     private void displayListView() {
-        Cursor cursor = dbHelper.fetchAllSchedules();
+        Cursor cursor = dbHelper.fetchAllPeriods();
 
-        String[] scheduleColumns = new String[]{
-                ScheduleDbAdapter.KEY_DATE,
-                ScheduleDbAdapter.KEY_MONDAY,
-                ScheduleDbAdapter.KEY_TUESDAY,
-                ScheduleDbAdapter.KEY_WEDNESDAY,
-                ScheduleDbAdapter.KEY_THURSDAY,
-                ScheduleDbAdapter.KEY_FRIDAY,
-                ScheduleDbAdapter.KEY_SATURDAY,
-                ScheduleDbAdapter.KEY_SUNDAY,
+        String[] periodColumns = new String[]{
+                PeriodDbAdapter.KEY_ICON,
+                PeriodDbAdapter.KEY_ALIAS,
+                PeriodDbAdapter.KEY_SECONDS,
                 ScheduleDbAdapter.KEY_ROWID
         };
 
-        int[] scheduleListLayoutIDs = new int[]{
-                R.id.timeTextView,
-                R.id.mondayTextView,
-                R.id.tuesdayTextView,
-                R.id.wednesdayTextView,
-                R.id.thursdayTextView,
-                R.id.fridayTextView,
-                R.id.saturdayTextView,
-                R.id.sundayTextView,
-                R.id.scheduleItemId
+        int[] periodListLayoutIDs = new int[]{
+                R.id.iconImageView,
+                R.id.aliasTextView,
+                R.id.secondsTextView,
+                R.id.periodItemId
         };
 
-        dataAdapter = new ItemAdapter(this, R.layout.scheduler_list_layout, cursor,
-                scheduleColumns, scheduleListLayoutIDs, 0);
+        dataAdapter = new ItemAdapter(this, R.layout.period_list_layout, cursor,
+                periodColumns, periodListLayoutIDs, 0);
 
-        ListView listView = (ListView) findViewById(R.id.schedulesScheduleActivityListView);
+        ListView listView = (ListView) findViewById(R.id.periodsPeriodActivityListView);
         listView.setAdapter(dataAdapter);
 
         if (listView.getAdapter().getCount() < 1) {
-            openScheduleAdjustActivity();
+            openPeriodAdjustActivity();
         }
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> listView, View view, int position, long id) {
                 Cursor cursor = (Cursor) listView.getItemAtPosition(position);
-                String key = cursor.getString(cursor.getColumnIndex(ScheduleDbAdapter.KEY_ROWID));
-                openScheduleAdjustActivity(key);
+                String key = cursor.getString(cursor.getColumnIndex(PeriodDbAdapter.KEY_ROWID));
+                openPeriodAdjustActivity(key);
             }
         });
     }
 
-    public void openScheduleAdjustActivity(String key) {
-        if (properties.isConnectedAndDateSync()) {
-            Intent intent = new Intent(this, ScheduleAdjustActivity.class);
-            intent.putExtra(ScheduleDbAdapter.KEY_ROWID, key);
-            startActivity(intent);
-        } else {
-            bluetoothSync();
-        }
+    public void openPeriodAdjustActivity(String key) {
+        Intent intent = new Intent(this, PeriodAdjustActivity.class);
+        intent.putExtra(PeriodDbAdapter.KEY_ROWID, key);
+        startActivity(intent);
     }
 
-    public void openScheduleAdjustActivity(View view) {
-        if (properties.isConnectedAndDateSync()) {
-            Intent intent = new Intent(this, ScheduleAdjustActivity.class);
-            startActivity(intent);
-        } else {
-            bluetoothSync();
-        }
+    public void openPeriodAdjustActivity(View view) {
+        Intent intent = new Intent(this, PeriodAdjustActivity.class);
+        startActivity(intent);
     }
 
-    public void openScheduleAdjustActivity() {
-        Intent intent = new Intent(this, ScheduleAdjustActivity.class);
+    public void openPeriodAdjustActivity() {
+        Intent intent = new Intent(this, PeriodAdjustActivity.class);
         startActivity(intent);
     }
 
 
     public void deleteItem(View view) {
-        if (properties.isConnectedAndDateSync()) {
-            ScheduleDbAdapter scheduleDbAdapter = new ScheduleDbAdapter(this);
-            scheduleDbAdapter.open();
+        PeriodDbAdapter periodDbAdapter = new PeriodDbAdapter(this);
+        periodDbAdapter.open();
 
-            View linearLayout = (View) view.getParent().getParent().getParent();
-            TextView scheduleItemIdTextView = (TextView) linearLayout.findViewById(R.id
-                    .scheduleItemId);
-            String itemId = scheduleItemIdTextView.getText().toString();
+        View linearLayout = (View) view.getParent().getParent().getParent();
+        TextView periodItemIdTextView = (TextView) linearLayout.findViewById(R.id.scheduleItemId);
+        String itemId = periodItemIdTextView.getText().toString();
 
-            scheduleDbAdapter.deleteItem(itemId);
+        periodDbAdapter.deleteItem(itemId);
 
-            sendSchedulesByBluetooth(scheduleDbAdapter);
-            displayListView();
-        } else {
-            bluetoothSync();
-        }
+        displayListView();
     }
 
     public void bluetoothSync() {
@@ -162,8 +139,6 @@ public class ScheduleActivity extends PimfeederActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_period:
-                Intent intent = new Intent(this, PeriodActivity.class);
-                startActivity(intent);
                 return true;
 
             case R.id.action_bluetooth:
@@ -171,6 +146,8 @@ public class ScheduleActivity extends PimfeederActivity {
                 return true;
 
             case R.id.action_schedule:
+                Intent intent = new Intent(this, ScheduleActivity.class);
+                startActivity(intent);
                 return true;
 
             default:
@@ -216,20 +193,5 @@ public class ScheduleActivity extends PimfeederActivity {
         } else {
             menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_bluetooth_desligado));
         }
-    }
-
-    private void sendSchedulesByBluetooth(ScheduleDbAdapter adapter) {
-
-        Cursor cursor = adapter.fetchAllSchedules();
-
-
-        String loadingWindowName = getResources().getString(R.string.loadingWindowName);
-        String msg = getResources().getString(R.string.sendingMessage);
-        progressDialog = ProgressDialog.show(this, loadingWindowName, msg);
-
-        BluetoothScheduleThread bluetooth = new BluetoothScheduleThread(BluetoothConnectThread
-                .socket,this,progressDialog);
-        bluetooth.setCursor(cursor);
-        bluetooth.start();
     }
 }

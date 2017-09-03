@@ -5,17 +5,18 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import br.com.curubodenga.pimfeeder.database.DatabaseHelper;
+
 
 /**
  * Created by curup on 26/07/2016.
  */
-public class ScheduleDbAdapter {
+public class ScheduleDbAdapter extends DatabaseHelper {
 
     public static final String KEY_ROWID = "_id";
     public static final String KEY_DATE = "date";
@@ -30,16 +31,13 @@ public class ScheduleDbAdapter {
     public static final String KEY_AUDIO = "audio";
 
     private static final String TAG = "ScheduleDbAdapter";
-    private DatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
 
-    private static final String DATABASE_NAME = "PimFeeder";
-    private static final String SQLITE_TABLE = "Schedule";
-    private static final int DATABASE_VERSION = 2;
+    public static final String SQLITE_TABLE = "Schedule";
 
     private final Context context;
 
-    private static final String DATABASE_CREATE =
+    public static final String DATABASE_CREATE =
             "CREATE TABLE if not exists " + SQLITE_TABLE + " (" +
                     KEY_ROWID + " integer PRIMARY KEY autoincrement," +
                     KEY_DATE + " datetime," +
@@ -53,29 +51,8 @@ public class ScheduleDbAdapter {
                     KEY_TIME + " integer," +
                     KEY_AUDIO + " integer);";
 
-    private static class DatabaseHelper extends SQLiteOpenHelper {
-
-        DatabaseHelper(Context context) {
-            super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        }
-
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            Log.w(TAG, DATABASE_CREATE);
-            db.execSQL(DATABASE_CREATE);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
-                    + newVersion + ", which will destroy all old data");
-            db.execSQL("DROP TABLE IF EXISTS " + SQLITE_TABLE);
-            onCreate(db);
-        }
-    }
-
     public ScheduleDbAdapter(Context context) {
+        super(context);
         this.context = context;
     }
 
@@ -129,7 +106,8 @@ public class ScheduleDbAdapter {
         return mDb.insert(SQLITE_TABLE, null, initialValues);
     }
 
-    private long updateSchedule(String id, Date date, int sunday, int monday, int tuesday, int wednesday, int
+    private long updateSchedule(String id, Date date, int sunday, int monday, int tuesday, int
+            wednesday, int
             thursday, int friday, int saturday, int time, int audio) {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

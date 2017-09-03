@@ -14,10 +14,10 @@
         android:title="@string/action_bluetooth"
         app:showAsAction="ifRoom"/>
 
-    <!--<item-->
-    <!--android:id="@+id/action_settings"-->
-    <!--android:icon="@drawable/ic_settings_white"-->
-    <!--android:title="@string/action_settings"-->
-    <!--app:showAsAction="ifRoom"/>-->
+    <item
+        android:id="@+id/action_period"
+        android:icon="@drawable/ic_chicken_leg_white"
+        android:title="Período"
+        app:showAsAction="ifRoom"/>
 
 </menu>
