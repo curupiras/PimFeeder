@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
             android:id="@+id/topPeriodAdjustLayout"
             android:orientation="horizontal">
@@ -39,30 +39,31 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/layout_bg"
-            android:theme="@style/MyTimePickerTheme"/>
+            android:theme="@style/MyNumberPickerTheme"
+            />
+        <TextView
+            android:id="@+id/aliasTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="Nome"
+            android:textSize="20dp"
+            android:layout_marginTop="10dp"/>
 
         <LinearLayout
             android:id="@+id/aliasLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/layout_bg"
             android:orientation="vertical"
             android:paddingLeft="20dp"
             android:paddingRight="20dp">
 
-            <TextView
-                android:id="@+id/aliasTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Nome"
-                android:textSize="20dp"/>
-
             <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:inputType="textPersonName"
                 android:text="Apelido"
                 android:ems="10"
@@ -70,10 +71,47 @@
 
         </LinearLayout>
 
-        <ImageSwitcher
+        <TextView
+            android:id="@+id/iconTextViewPeriodAdjust"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/periodImageSwitcher"/>
+            android:layout_weight="0"
+            android:text="@string/icon"
+            android:textSize="20dp"
+            android:layout_marginTop="10dp"/>
+        
+        <LinearLayout
+            android:id="@+id/iconLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/layout_bg"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/previewsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center"
+                android:layout_margin="10dp"/>
+
+            <ImageSwitcher
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/periodImageSwitcher"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"/>
+
+            <Button
+                android:id="@+id/nextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center"
+                android:layout_margin="10dp"/>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/dateScheduleAdjustSaveButton"

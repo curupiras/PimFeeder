@@ -1,23 +1,24 @@
 package br.com.curubodenga.pimfeeder.period;
 
+import android.app.ActionBar.LayoutParams;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageSwitcher;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
-import android.widget.TimePicker;
-
-import java.util.Calendar;
+import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import br.com.curubodenga.pimfeeder.R;
 import br.com.curubodenga.pimfeeder.bluetooth.BluetoothConnectThread;
 import br.com.curubodenga.pimfeeder.bluetooth.Properties;
 import br.com.curubodenga.pimfeeder.schedule.PimfeederActivity;
-import br.com.curubodenga.pimfeeder.schedule.ScheduleActivity;
-import br.com.curubodenga.pimfeeder.schedule.ScheduleDbAdapter;
+import br.com.curubodenga.pimfeeder.schedule.Schedule;
 
 public class PeriodAdjustActivity extends PimfeederActivity {
 
@@ -40,6 +41,7 @@ public class PeriodAdjustActivity extends PimfeederActivity {
             this.period = new Period();
         }
 
+        initializeScreen();
         updateScreen();
     }
 
@@ -48,6 +50,12 @@ public class PeriodAdjustActivity extends PimfeederActivity {
         periodDbAdapter.open();
         Cursor cursor = periodDbAdapter.fetchPeriod(key);
         return Period.getPeriod(cursor);
+    }
+
+    private void initializeScreen() {
+        initializeNumberPicker();
+        initializeButtons();
+        initializeImageSwitcher();
     }
 
     private void updateScreen() {
@@ -61,6 +69,53 @@ public class PeriodAdjustActivity extends PimfeederActivity {
 
         int seconds = period.getSeconds();
         numberPicker.setValue(seconds);
+    }
+
+    private void initializeNumberPicker() {
+        NumberPicker numberPicker = (NumberPicker) findViewById(R.id.periodAdjustNumberPicker);
+
+        numberPicker.setMaxValue(300);
+        numberPicker.setMinValue(1);
+        numberPicker.setValue(Schedule.DEFAULT_TIME);
+    }
+
+    private void initializeButtons() {
+        Button previewsButton = (Button) findViewById(R.id.previewsButton);
+        Button nextButton = (Button) findViewById(R.id.nextButton);
+
+        previewsButton.setText("< Anterior");
+        nextButton.setText("Próximo >");
+
+        previewsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ImageSwitcher sw = (ImageSwitcher) findViewById(R.id.periodImageSwitcher);
+                sw.setImageResource(R.drawable.hamburger);
+            }
+        });
+
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ImageSwitcher sw = (ImageSwitcher) findViewById(R.id.periodImageSwitcher);
+                sw.setImageResource(R.drawable.coxa);
+            }
+        });
+    }
+
+    private void initializeImageSwitcher() {
+        ImageSwitcher sw = (ImageSwitcher) findViewById(R.id.periodImageSwitcher);
+        sw.setFactory(new ViewSwitcher.ViewFactory() {
+            @Override
+            public View makeView() {
+                ImageView myView = new ImageView(getApplicationContext());
+                myView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                myView.setLayoutParams(new
+                        ImageSwitcher.LayoutParams(LayoutParams.MATCH_PARENT,
+                        LayoutParams.MATCH_PARENT));
+                return myView;
+            }
+        });
     }
 
     private void updateEditText() {

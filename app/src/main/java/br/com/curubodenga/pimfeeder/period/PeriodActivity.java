@@ -46,8 +46,8 @@ public class PeriodActivity extends PimfeederActivity {
         manageBluetoothConnection();
         dbHelper = new PeriodDbAdapter(this);
         dbHelper.open();
-
-        displayListView();
+//TODO: mostrar lista de periods
+//        displayListView();
     }
 
     @Override
