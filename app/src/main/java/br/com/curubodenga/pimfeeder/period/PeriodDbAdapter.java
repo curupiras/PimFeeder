@@ -54,7 +54,7 @@ public class PeriodDbAdapter extends DatabaseHelper {
 
     public long createPeriod(Period period) {
         String id = period.getId();
-        String icon = period.getIcon();
+        int icon = period.getIcon();
         String alias = period.getAlias();
         int seconds = period.getSeconds();
 
@@ -65,7 +65,7 @@ public class PeriodDbAdapter extends DatabaseHelper {
         }
     }
 
-    private long createPeriod(String icon, String alias, int seconds) {
+    private long createPeriod(int icon, String alias, int seconds) {
 
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_ICON, icon);
@@ -75,7 +75,7 @@ public class PeriodDbAdapter extends DatabaseHelper {
         return mDb.insert(SQLITE_TABLE, null, initialValues);
     }
 
-    private long updatePeriod(String id, String icon, String alias, int seconds) {
+    private long updatePeriod(String id, int icon, String alias, int seconds) {
 
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_ICON, icon);

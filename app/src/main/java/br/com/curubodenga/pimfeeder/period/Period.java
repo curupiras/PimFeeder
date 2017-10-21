@@ -2,6 +2,7 @@ package br.com.curubodenga.pimfeeder.period;
 
 import android.database.Cursor;
 
+import br.com.curubodenga.pimfeeder.R;
 import br.com.curubodenga.pimfeeder.schedule.Schedule;
 
 /**
@@ -10,11 +11,11 @@ import br.com.curubodenga.pimfeeder.schedule.Schedule;
 public class Period {
 
     public static final String PERIOD = "PERIOD";
-    public static final String DEFAULT_ICON = "0";
+    public static final int DEFAULT_ICON = R.drawable.coxa;
     public static final String DEFAULT_ALIAS = "";
 
     private String id;
-    private String icon;
+    private int icon;
     private String alias;
     private int seconds;
 
@@ -25,11 +26,11 @@ public class Period {
         this.seconds = Schedule.DEFAULT_TIME;
     }
 
-    public String getIcon() {
+    public int getIcon() {
         return icon;
     }
 
-    public void setIcon(String icon) {
+    public void setIcon(int icon) {
         this.icon = icon;
     }
 
@@ -61,7 +62,7 @@ public class Period {
         Period period = new Period();
 
         String id = cursor.getString(cursor.getColumnIndex(PeriodDbAdapter.KEY_ROWID));
-        String icon = cursor.getString(cursor.getColumnIndex(PeriodDbAdapter.KEY_ICON));
+        int icon = cursor.getInt(cursor.getColumnIndex(PeriodDbAdapter.KEY_ICON));
         String alias = cursor.getString(cursor.getColumnIndex(PeriodDbAdapter.KEY_ALIAS));
         int seconds = cursor.getInt(cursor.getColumnIndex(PeriodDbAdapter.KEY_SECONDS));
 

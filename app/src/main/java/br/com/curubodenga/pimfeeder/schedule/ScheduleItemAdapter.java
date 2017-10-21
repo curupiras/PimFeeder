@@ -16,7 +16,7 @@ import java.util.List;
 import br.com.curubodenga.pimfeeder.R;
 import br.com.curubodenga.pimfeeder.utils.DateUtils;
 
-public class ItemAdapter extends SimpleCursorAdapter {
+public class ScheduleItemAdapter extends SimpleCursorAdapter {
 
     private Context mContext;
     private Context appContext;
@@ -27,7 +27,7 @@ public class ItemAdapter extends SimpleCursorAdapter {
     private String[] from;
     private int[] to;
 
-    public ItemAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags) {
+    public ScheduleItemAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags) {
         super(context, layout, c, from, to, flags);
         this.layout = layout;
         this.mContext = context;

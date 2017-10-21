@@ -16,7 +16,7 @@
     </style>
 
     <style name="MyNumberPickerTheme" parent="@android:style/Widget.Holo.Light">
-        <item name="android:textSize">40sp</item>
+        <item name="android:textSize">30sp</item>
         <item name="android:textColor">@color/PimFeederGray</item>
         <item name="android:textColorPrimary">@color/PimFeederGray</item>
     </style>

@@ -32,7 +32,7 @@
     <string name="sendMessageFail">Falha ao enviar dados para o PimFeeder</string>
     <string name="sendMessageOK">Dados enviados com sucesso</string>
     <string name="failWindowName">Falha</string>
-    <string name="icon">Ícone</string>
+    <string name="icon">Escolha um ícone:</string>
 
     <!-- Strings related to Settings -->
 

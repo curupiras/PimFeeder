@@ -4,6 +4,7 @@ import android.app.ActionBar.LayoutParams;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -26,6 +27,7 @@ public class PeriodAdjustActivity extends PimfeederActivity {
     private Properties properties;
     private ProgressDialog progressDialog;
     private int currentImage = 0;
+    private CircularList circularList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,24 +75,33 @@ public class PeriodAdjustActivity extends PimfeederActivity {
 
     private void initializeNumberPicker() {
         NumberPicker numberPicker = (NumberPicker) findViewById(R.id.periodAdjustNumberPicker);
+        numberPicker.setFormatter(new SecondsFormatter());
 
         numberPicker.setMaxValue(300);
         numberPicker.setMinValue(1);
         numberPicker.setValue(Schedule.DEFAULT_TIME);
+        numberPicker.refreshDrawableState();
     }
 
     private void initializeButtons() {
         Button previewsButton = (Button) findViewById(R.id.previewsButton);
         Button nextButton = (Button) findViewById(R.id.nextButton);
 
-        previewsButton.setText("< Anterior");
-        nextButton.setText("Próximo >");
+        previewsButton.setBackgroundColor(Color.TRANSPARENT);
+        nextButton.setBackgroundColor(Color.TRANSPARENT);
+
+        previewsButton.setTextColor(Color.rgb(0x87,0x87,0x87));
+        nextButton.setTextColor(Color.rgb(0x87,0x87,0x87));
+
+        previewsButton.setText("<");
+        nextButton.setText(">");
 
         previewsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ImageSwitcher sw = (ImageSwitcher) findViewById(R.id.periodImageSwitcher);
-                sw.setImageResource(R.drawable.hamburger);
+                currentImage = circularList.getPrev();
+                sw.setImageResource(currentImage);
             }
         });
 
@@ -98,12 +109,14 @@ public class PeriodAdjustActivity extends PimfeederActivity {
             @Override
             public void onClick(View v) {
                 ImageSwitcher sw = (ImageSwitcher) findViewById(R.id.periodImageSwitcher);
-                sw.setImageResource(R.drawable.coxa);
+                currentImage = circularList.getNext();
+                sw.setImageResource(currentImage);
             }
         });
     }
 
     private void initializeImageSwitcher() {
+
         ImageSwitcher sw = (ImageSwitcher) findViewById(R.id.periodImageSwitcher);
         sw.setFactory(new ViewSwitcher.ViewFactory() {
             @Override
@@ -116,6 +129,20 @@ public class PeriodAdjustActivity extends PimfeederActivity {
                 return myView;
             }
         });
+
+        circularList = new CircularList();
+
+        circularList.add(R.drawable.steak);
+        circularList.add(R.drawable.sausage);
+        circularList.add(R.drawable.pernil);
+        circularList.add(R.drawable.kebab);
+        circularList.add(R.drawable.hamburger);
+        circularList.add(R.drawable.fish);
+        circularList.add(R.drawable.coxa);
+        circularList.add(R.drawable.chicken);
+
+        currentImage = circularList.get(0);
+        sw.setImageResource(currentImage);
     }
 
     private void updateEditText() {
@@ -128,7 +155,7 @@ public class PeriodAdjustActivity extends PimfeederActivity {
     private void updateImageSwitcher() {
         ImageSwitcher imageSwitcher = (ImageSwitcher) findViewById(R.id.periodImageSwitcher);
 
-        String icon = period.getIcon();
+        int icon = period.getIcon();
 //        imageSwitcher.setImageResource(new Integer(icon));
 
     }
@@ -140,7 +167,7 @@ public class PeriodAdjustActivity extends PimfeederActivity {
 
         this.period.setSeconds(numberPicker.getValue());
         this.period.setAlias(editText.getText().toString());
-        this.period.setIcon(""+currentImage);
+        this.period.setIcon(currentImage);
 
         PeriodDbAdapter periodDbAdapter = new PeriodDbAdapter(this);
         periodDbAdapter.open();
@@ -157,5 +184,4 @@ public class PeriodAdjustActivity extends PimfeederActivity {
         Thread bluetoothConnectThread = new BluetoothConnectThread(this, progressDialog);
         bluetoothConnectThread.start();
     }
-
 }

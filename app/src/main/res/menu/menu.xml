@@ -9,15 +9,15 @@
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/action_bluetooth"
-        android:icon="@drawable/ic_bluetooth_desligado"
-        android:title="@string/action_bluetooth"
-        app:showAsAction="ifRoom"/>
-
-    <item
         android:id="@+id/action_period"
         android:icon="@drawable/ic_chicken_leg_white"
         android:title="Período"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_bluetooth"
+        android:icon="@drawable/ic_bluetooth_desligado"
+        android:title="@string/action_bluetooth"
         app:showAsAction="ifRoom"/>
 
 </menu>

@@ -18,7 +18,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import br.com.curubodenga.pimfeeder.R;
 import br.com.curubodenga.pimfeeder.bluetooth.BluetoothConnectThread;
@@ -86,7 +85,7 @@ public class ScheduleActivity extends PimfeederActivity {
                 R.id.scheduleItemId
         };
 
-        dataAdapter = new ItemAdapter(this, R.layout.scheduler_list_layout, cursor,
+        dataAdapter = new ScheduleItemAdapter(this, R.layout.scheduler_list_layout, cursor,
                 scheduleColumns, scheduleListLayoutIDs, 0);
 
         ListView listView = (ListView) findViewById(R.id.schedulesScheduleActivityListView);
@@ -212,9 +211,9 @@ public class ScheduleActivity extends PimfeederActivity {
 
     public void updateBluetoothIcon() {
         if (properties.isConnectedAndDateSync()) {
-            menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_bluetooth_ligado));
+            menu.getItem(2).setIcon(getResources().getDrawable(R.drawable.ic_bluetooth_ligado));
         } else {
-            menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_bluetooth_desligado));
+            menu.getItem(2).setIcon(getResources().getDrawable(R.drawable.ic_bluetooth_desligado));
         }
     }
 

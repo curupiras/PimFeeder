@@ -22,7 +22,6 @@ import android.widget.TextView;
 import br.com.curubodenga.pimfeeder.R;
 import br.com.curubodenga.pimfeeder.bluetooth.BluetoothConnectThread;
 import br.com.curubodenga.pimfeeder.bluetooth.Properties;
-import br.com.curubodenga.pimfeeder.schedule.ItemAdapter;
 import br.com.curubodenga.pimfeeder.schedule.PimfeederActivity;
 import br.com.curubodenga.pimfeeder.schedule.ScheduleActivity;
 import br.com.curubodenga.pimfeeder.schedule.ScheduleDbAdapter;
@@ -46,8 +45,8 @@ public class PeriodActivity extends PimfeederActivity {
         manageBluetoothConnection();
         dbHelper = new PeriodDbAdapter(this);
         dbHelper.open();
-//TODO: mostrar lista de periods
-//        displayListView();
+
+        displayListView();
     }
 
     @Override
@@ -77,7 +76,7 @@ public class PeriodActivity extends PimfeederActivity {
                 R.id.periodItemId
         };
 
-        dataAdapter = new ItemAdapter(this, R.layout.period_list_layout, cursor,
+        dataAdapter = new PeriodItemAdapter(this, R.layout.period_list_layout, cursor,
                 periodColumns, periodListLayoutIDs, 0);
 
         ListView listView = (ListView) findViewById(R.id.periodsPeriodActivityListView);
@@ -189,9 +188,9 @@ public class PeriodActivity extends PimfeederActivity {
 
     public void updateBluetoothIcon() {
         if (properties.isConnectedAndDateSync()) {
-            menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_bluetooth_ligado));
+            menu.getItem(2).setIcon(getResources().getDrawable(R.drawable.ic_bluetooth_ligado));
         } else {
-            menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_bluetooth_desligado));
+            menu.getItem(2).setIcon(getResources().getDrawable(R.drawable.ic_bluetooth_desligado));
         }
     }
 }
