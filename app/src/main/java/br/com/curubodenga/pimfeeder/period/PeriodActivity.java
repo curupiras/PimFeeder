@@ -118,7 +118,7 @@ public class PeriodActivity extends PimfeederActivity {
         periodDbAdapter.open();
 
         View linearLayout = (View) view.getParent().getParent().getParent();
-        TextView periodItemIdTextView = (TextView) linearLayout.findViewById(R.id.scheduleItemId);
+        TextView periodItemIdTextView = (TextView) linearLayout.findViewById(R.id.periodItemId);
         String itemId = periodItemIdTextView.getText().toString();
 
         periodDbAdapter.deleteItem(itemId);

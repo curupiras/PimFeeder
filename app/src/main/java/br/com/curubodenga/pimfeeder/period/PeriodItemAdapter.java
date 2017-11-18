@@ -3,12 +3,16 @@ package br.com.curubodenga.pimfeeder.period;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +32,8 @@ public class PeriodItemAdapter extends SimpleCursorAdapter {
     private String[] from;
     private int[] to;
 
-    public PeriodItemAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags) {
+    public PeriodItemAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int
+            flags) {
         super(context, layout, c, from, to, flags);
         this.layout = layout;
         this.mContext = context;
@@ -47,76 +52,20 @@ public class PeriodItemAdapter extends SimpleCursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
 
-        TextView timeTextView = (TextView) view.findViewById(to[0]);
-        String time = DateUtils.getHHmm(cursor.getString(cursor.getColumnIndex(from[0])));
-        timeTextView.setText(time);
+        ImageView imageView = (ImageView) view.findViewById(to[0]);
+        int icon = cursor.getInt(cursor.getColumnIndex(from[0]));
+        imageView.setImageResource(icon);
 
-        TextView completeDayTextView = (TextView) view.findViewById(R.id.completeDayTextView);
-        time = DateUtils.getCompleteDay(cursor.getString(cursor.getColumnIndex(from[0])));
-        completeDayTextView.setText(time);
+        TextView aliasTextView = (TextView) view.findViewById(to[1]);
+        String alias = cursor.getString(cursor.getColumnIndex(from[1]));
+        aliasTextView.setText(alias);
 
-        TextView scheduleItemId = (TextView) view.findViewById(R.id.scheduleItemId);
-        scheduleItemId.setText(cursor.getString(cursor.getColumnIndex(ScheduleDbAdapter.KEY_ROWID)));
+        TextView secondsTextView = (TextView) view.findViewById(to[2]);
+        String seconds = cursor.getString(cursor.getColumnIndex(from[2]));
+        secondsTextView.setText(seconds + " seg");
 
-
-        boolean isAllUnsetted = true;
-        List<TextView> textViews = new ArrayList<TextView>();
-        for (int i = 1; i < from.length-1; i++) {
-            TextView dayTextView = (TextView) view.findViewById(to[i]);
-            textViews.add(dayTextView);
-            int daySettedInt = cursor.getInt(cursor.getColumnIndex(from[i]));
-            boolean daySetted = toBoolean(daySettedInt);
-            isAllUnsetted = isAllUnsetted && !daySetted;
-            if (daySetted) {
-                dayTextView.setTextColor(Color.BLUE);
-            } else {
-                dayTextView.setTextColor(Color.GRAY);
-            }
-        }
-
-        if (isAllUnsetted) {
-            hideWeekDaysLayout(view);
-            showCompleteDayTextView(view);
-        } else {
-            showWeekDaysLayout(view);
-            hideCompleteDayTextView(view);
-        }
+        TextView periodItemId = (TextView) view.findViewById(to[3]);
+        String itemId = cursor.getString(cursor.getColumnIndex(from[3]));
+        periodItemId.setText(itemId);
     }
-
-    private void hideWeekDaysLayout(View view) {
-        LinearLayout weekDayLayout = (LinearLayout) view.findViewById(R.id.weekDayLayout);
-        weekDayLayout.setVisibility(View.GONE);
-    }
-
-    private void showWeekDaysLayout(View view) {
-        LinearLayout weekDayLayout = (LinearLayout) view.findViewById(R.id.weekDayLayout);
-        weekDayLayout.setVisibility(View.VISIBLE);
-    }
-
-    private void hideCompleteDayTextView(View view) {
-        LinearLayout completeDayLayout = (LinearLayout) view.findViewById(R.id.completeDayLayout);
-        completeDayLayout.setVisibility(View.GONE);
-    }
-
-    private void showCompleteDayTextView(View view) {
-        LinearLayout completeDayLayout = (LinearLayout) view.findViewById(R.id.completeDayLayout);
-        completeDayLayout.setVisibility(View.VISIBLE);
-    }
-
-    private Boolean toBoolean(int i) {
-        if (i > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean isEnabled(int position) {
-       return enabled;
-    }
-
-    public void setEnabled(boolean isEnabled){
-        enabled = isEnabled;
-    }
-
 }

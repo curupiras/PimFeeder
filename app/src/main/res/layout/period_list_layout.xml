@@ -18,31 +18,58 @@
 
         <ImageView
             android:id="@+id/iconImageView"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="20dp"
+            android:layout_width="60sp"
+            android:layout_height="60sp"
+            android:layout_marginBottom="20sp"
+            android:layout_marginLeft="5sp"
+            android:layout_marginRight="10sp"
+            android:layout_marginTop="20sp"
+            android:layout_weight="0"
             android:src="@drawable/ic_chicken_leg"></ImageView>
 
         <TextView
             android:id="@+id/aliasTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="center"
+            android:gravity="left"
             android:layout_weight="1"
-            android:text="@+id/timeTextView"
-            android:textSize="40dp"></TextView>
+            android:maxLines="1"
+            android:maxLength="12"
+            android:textSize="25sp"></TextView>
 
-        <TextView
-            android:id="@+id/secondsTextView"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:text="@+id/timeTextView"
-            android:textSize="40dp"></TextView>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/deletePeriodButton"
+                android:layout_width="30sp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|right"
+                android:paddingRight="10sp"
+                android:paddingTop="5sp"
+                android:layout_weight="3"
+                android:background="@android:color/transparent"
+                android:gravity="right"
+                android:textAlignment="gravity"
+                android:textStyle="bold"
+                android:onClick="deleteItem"
+                android:text="X"/>
+
+            <TextView
+                android:id="@+id/secondsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="9"
+                android:textSize="25sp"
+                android:layout_marginRight="10sp"
+                android:layout_marginLeft="10sp"
+                android:text="15 seg"></TextView>
+
+        </LinearLayout>
 
     </LinearLayout>
 
