@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                tools:context="br.com.curubodenga.pimfeeder.schedule.ScheduleAdjustActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/aliasTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Nome da refeição:"
+                    android:textSize="20sp"
+                    android:layout_marginTop="10sp"/>
+
+                <TextView
+                    android:id="@+id/dateScheduleAdjustSaveButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_gravity="right"
+                    android:gravity="right"
+                    android:onClick="save"
+                    android:text="SALVAR"
+                    android:textSize="18sp"
+                    android:layout_marginTop="10sp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/aliasLayout"
+                android:layout_width="match_parent"
+                android:layout_height="40sp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10sp"
+                android:background="@drawable/layout_bg"
+                android:orientation="vertical"
+                android:paddingLeft="20sp"
+                android:paddingRight="20sp">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textPersonName"
+                    android:text="Apelido"
+                    android:ems="10"
+                    android:maxLength="12"
+                    android:id="@+id/aliasEditText"
+                    android:background="@android:color/transparent"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginRight="5sp"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/secondsPeriodAdjustTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tempo de liberação da ração:"
+                    android:layout_marginTop="10sp"
+                    android:textSize="20sp"/>
+
+                <NumberPicker
+                    android:id="@+id/periodAdjustNumberPicker"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/layout_bg"
+                    android:layout_marginTop="10sp"
+                    android:theme="@style/MyNumberPickerTheme"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginLeft="5sp"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/iconTextViewPeriodAdjust"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:text="@string/icon"
+                    android:textSize="20sp"
+                    android:layout_marginTop="10sp"
+                    />
+
+                <LinearLayout
+                    android:id="@+id/iconLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10sp"
+                    android:background="@drawable/layout_bg"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/previewsButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left|center"
+                        android:layout_margin="10sp"
+                        android:textSize="40sp"/>
+
+                    <ImageSwitcher
+                        android:layout_width="wrap_content"
+                        android:layout_height="80sp"
+                        android:id="@+id/periodImageSwitcher"
+                        android:layout_marginTop="10sp"
+                        android:layout_marginBottom="10sp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"/>
+
+                    <Button
+                        android:id="@+id/nextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|center"
+                        android:layout_margin="10sp"
+                        android:textSize="40sp"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+
+
+
+    </LinearLayout>
+
+</RelativeLayout>
