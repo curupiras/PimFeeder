@@ -55,6 +55,7 @@ public class PeriodActivity extends PimfeederActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         updateBluetoothIcon();
+        updateMenuIcons();
 
         return true;
     }
@@ -191,6 +192,21 @@ public class PeriodActivity extends PimfeederActivity {
             menu.getItem(2).setIcon(getResources().getDrawable(R.drawable.ic_bluetooth_ligado));
         } else {
             menu.getItem(2).setIcon(getResources().getDrawable(R.drawable.ic_bluetooth_desligado));
+        }
+    }
+
+    public void updateMenuIcons(){
+        if(menu!=null){
+            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_clock_off));
+            menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_chicken_leg_on));
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent authActivityResult) {
+        super.onActivityResult(requestCode, resultCode, authActivityResult);
+        if(resultCode == RESULT_OK && requestCode == REQUEST_ENABLE_BT){
+            bluetoothSync();
         }
     }
 }

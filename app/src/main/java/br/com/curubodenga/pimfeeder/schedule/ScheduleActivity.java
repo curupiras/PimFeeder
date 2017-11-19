@@ -54,6 +54,7 @@ public class ScheduleActivity extends PimfeederActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         updateBluetoothIcon();
+        updateMenuIcons();
 
         return true;
     }
@@ -230,5 +231,20 @@ public class ScheduleActivity extends PimfeederActivity {
                 .socket,this,progressDialog);
         bluetooth.setCursor(cursor);
         bluetooth.start();
+    }
+
+    public void updateMenuIcons(){
+        if(menu != null){
+            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_clock_on));
+            menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_chicken_leg_off));
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent authActivityResult) {
+        super.onActivityResult(requestCode, resultCode, authActivityResult);
+        if(resultCode == RESULT_OK && requestCode == REQUEST_ENABLE_BT){
+            bluetoothSync();
+        }
     }
 }

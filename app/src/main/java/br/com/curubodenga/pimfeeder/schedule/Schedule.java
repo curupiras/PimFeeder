@@ -48,7 +48,7 @@ public class Schedule {
     public static final int AUDIO_POSITION_2 = 23;
 
     public static final int DEFAULT_AUDIO = 0;
-    public static final int DEFAULT_TIME = 15;
+    public static final int DEFAULT_TIME = 18;
 
 
     private String id;

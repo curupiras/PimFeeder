@@ -155,8 +155,8 @@ public class PeriodAdjustActivity extends PimfeederActivity {
     private void updateImageSwitcher() {
         ImageSwitcher imageSwitcher = (ImageSwitcher) findViewById(R.id.periodImageSwitcher);
 
-        int icon = period.getIcon();
-//        imageSwitcher.setImageResource(new Integer(icon));
+        currentImage = period.getIcon();
+        imageSwitcher.setImageResource(currentImage);
 
     }
 

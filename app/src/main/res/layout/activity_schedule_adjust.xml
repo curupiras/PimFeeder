@@ -18,8 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20sp"
+            android:layout_marginTop="10sp"
             android:id="@+id/topScheduleAdjustLayout"
             android:orientation="horizontal">
 
@@ -29,13 +29,13 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:onClick="openDatePicker"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
             <ImageButton
                 android:id="@+id/openCalendarScheduleAdjustImageButton"
-                android:layout_width="23dp"
-                android:layout_height="23dp"
-                android:layout_marginRight="10dp"
+                android:layout_width="23sp"
+                android:layout_height="23sp"
+                android:layout_marginRight="10sp"
                 android:background="@android:color/transparent"
                 android:onClick="openDatePicker"
                 android:scaleType="fitCenter"
@@ -46,10 +46,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="5dp"
+                android:layout_marginRight="5sp"
                 android:onClick="openDatePicker"
                 android:text="Data"
-                android:textSize="18dp"/>
+                android:textSize="18sp"/>
 
         </LinearLayout>
 
@@ -74,11 +74,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="20sp"
             android:background="@drawable/layout_bg"
             android:orientation="horizontal"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp">
+            android:paddingLeft="20sp"
+            android:paddingRight="20sp">
 
             <Button
                 android:id="@+id/sundayButton"
@@ -89,7 +89,7 @@
                 android:background="@android:color/transparent"
                 android:onClick="sundayToggle"
                 android:text="D"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
             <TextView
                 android:id="@+id/editText1"
@@ -98,7 +98,7 @@
                 android:layout_weight="1"
                 android:text="|"
                 android:textAlignment="center"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
             <Button
                 android:id="@+id/mondayButton"
@@ -109,7 +109,7 @@
                 android:background="@android:color/transparent"
                 android:onClick="mondayToggle"
                 android:text="S"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
             <TextView
                 android:id="@+id/editText2"
@@ -118,7 +118,7 @@
                 android:layout_weight="1"
                 android:text="|"
                 android:textAlignment="center"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
             <Button
                 android:id="@+id/tuesdayButton"
@@ -129,7 +129,7 @@
                 android:background="@android:color/transparent"
                 android:onClick="tuesdayToggle"
                 android:text="T"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
             <TextView
                 android:id="@+id/editText3"
@@ -138,7 +138,7 @@
                 android:layout_weight="1"
                 android:text="|"
                 android:textAlignment="center"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
             <Button
                 android:id="@+id/wednesdayButton"
@@ -149,7 +149,7 @@
                 android:background="@android:color/transparent"
                 android:onClick="wednesdayToggle"
                 android:text="Q"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
             <TextView
                 android:id="@+id/editText4"
@@ -158,7 +158,7 @@
                 android:layout_weight="1"
                 android:text="|"
                 android:textAlignment="center"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
             <Button
                 android:id="@+id/thursdayButton"
@@ -169,7 +169,7 @@
                 android:background="@android:color/transparent"
                 android:onClick="thursdayToggle"
                 android:text="Q"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
             <TextView
                 android:id="@+id/editText5"
@@ -178,7 +178,7 @@
                 android:layout_weight="1"
                 android:text="|"
                 android:textAlignment="center"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
             <Button
                 android:id="@+id/fridayButton"
@@ -189,7 +189,7 @@
                 android:background="@android:color/transparent"
                 android:onClick="fridayToggle"
                 android:text="S"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
             <TextView
                 android:id="@+id/editText6"
@@ -198,7 +198,7 @@
                 android:layout_weight="1"
                 android:text="|"
                 android:textAlignment="center"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
             <Button
                 android:id="@+id/saturdayButton"
@@ -209,7 +209,7 @@
                 android:background="@android:color/transparent"
                 android:onClick="saturdayToggle"
                 android:text="S"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
         </LinearLayout>
 
@@ -218,21 +218,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="5sp"
             android:onClick="dateSelected"
             android:text="OK"
-            android:textSize="18dp"/>
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/dateScheduleAdjustSaveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginRight="5sp"
+            android:layout_marginTop="20sp"
             android:onClick="save"
             android:text="SALVAR"
-            android:textSize="18dp"/>
+            android:textSize="18sp"/>
 
     </LinearLayout>
 </RelativeLayout>

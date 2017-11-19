@@ -4,13 +4,13 @@
 
     <item
         android:id="@+id/action_schedule"
-        android:icon="@drawable/ic_clock_white"
+        android:icon="@drawable/ic_clock_on"
         android:title="@string/action_schedule"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_period"
-        android:icon="@drawable/ic_chicken_leg_white"
+        android:icon="@drawable/ic_chicken_leg_off"
         android:title="Período"
         app:showAsAction="ifRoom"/>
 
