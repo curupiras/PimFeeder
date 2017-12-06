@@ -20,6 +20,7 @@ import br.com.curubodenga.pimfeeder.bluetooth.BluetoothConnectThread;
 import br.com.curubodenga.pimfeeder.bluetooth.Properties;
 import br.com.curubodenga.pimfeeder.schedule.PimfeederActivity;
 import br.com.curubodenga.pimfeeder.schedule.Schedule;
+import br.com.curubodenga.pimfeeder.schedule.ScheduleAdjustActivity;
 
 public class PeriodAdjustActivity extends PimfeederActivity {
 
@@ -172,6 +173,7 @@ public class PeriodAdjustActivity extends PimfeederActivity {
         PeriodDbAdapter periodDbAdapter = new PeriodDbAdapter(this);
         periodDbAdapter.open();
         periodDbAdapter.createPeriod(this.period);
+
 
         Intent intent = new Intent(this, PeriodActivity.class);
         startActivity(intent);

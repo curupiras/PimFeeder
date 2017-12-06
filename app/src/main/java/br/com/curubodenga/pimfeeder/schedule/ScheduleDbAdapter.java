@@ -11,6 +11,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import br.com.curubodenga.pimfeeder.database.DatabaseHelper;
+import br.com.curubodenga.pimfeeder.period.Period;
+import br.com.curubodenga.pimfeeder.period.PeriodDbAdapter;
 
 
 /**
@@ -29,16 +31,17 @@ public class ScheduleDbAdapter extends DatabaseHelper {
     public static final String KEY_SUNDAY = "sunday";
     public static final String KEY_TIME = "time";
     public static final String KEY_AUDIO = "audio";
+    public static final String KEY_PERIOD_ID = PeriodDbAdapter.TABLE + "_id";
 
     private static final String TAG = "ScheduleDbAdapter";
     private SQLiteDatabase mDb;
 
-    public static final String SQLITE_TABLE = "Schedule";
+    public static final String TABLE = "Schedule";
 
     private final Context context;
 
     public static final String DATABASE_CREATE =
-            "CREATE TABLE if not exists " + SQLITE_TABLE + " (" +
+            "CREATE TABLE if not exists " + TABLE + " (" +
                     KEY_ROWID + " integer PRIMARY KEY autoincrement," +
                     KEY_DATE + " datetime," +
                     KEY_MONDAY + " integer," +
@@ -49,7 +52,10 @@ public class ScheduleDbAdapter extends DatabaseHelper {
                     KEY_SATURDAY + " integer," +
                     KEY_SUNDAY + " integer," +
                     KEY_TIME + " integer," +
-                    KEY_AUDIO + " integer);";
+                    KEY_AUDIO + " integer," +
+                    KEY_PERIOD_ID + " integer," +
+                    " FOREIGN KEY (" + KEY_PERIOD_ID + ") REFERENCES " +
+                    PeriodDbAdapter.TABLE + "(" + PeriodDbAdapter.KEY_ROWID + "));";
 
     public ScheduleDbAdapter(Context context) {
         super(context);
@@ -79,15 +85,17 @@ public class ScheduleDbAdapter extends DatabaseHelper {
 
         if (schedule.getId() == null) {
             return createSchedule(schedule.getDate(), sunday, monday, tuesday, wednesday, thursday,
-                    friday, saturday, schedule.getTime(), schedule.getAudio());
+                    friday, saturday, schedule.getTime(), schedule.getAudio(), schedule.getPeriod
+                            ());
         } else {
             return updateSchedule(schedule.getId(), schedule.getDate(), sunday, monday, tuesday,
-                    wednesday, thursday, friday, saturday, schedule.getTime(), schedule.getAudio());
+                    wednesday, thursday, friday, saturday, schedule.getTime(), schedule.getAudio
+                            (), schedule.getPeriod());
         }
     }
 
     private long createSchedule(Date date, int sunday, int monday, int tuesday, int wednesday, int
-            thursday, int friday, int saturday, int time, int audio) {
+            thursday, int friday, int saturday, int time, int audio, Period period) {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -102,13 +110,13 @@ public class ScheduleDbAdapter extends DatabaseHelper {
         initialValues.put(KEY_SUNDAY, sunday);
         initialValues.put(KEY_TIME, time);
         initialValues.put(KEY_AUDIO, audio);
+        initialValues.put(KEY_PERIOD_ID, period.getId());
 
-        return mDb.insert(SQLITE_TABLE, null, initialValues);
+        return mDb.insert(TABLE, null, initialValues);
     }
 
     private long updateSchedule(String id, Date date, int sunday, int monday, int tuesday, int
-            wednesday, int
-            thursday, int friday, int saturday, int time, int audio) {
+            wednesday, int thursday, int friday, int saturday, int time, int audio, Period period) {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -123,32 +131,33 @@ public class ScheduleDbAdapter extends DatabaseHelper {
         initialValues.put(KEY_SUNDAY, sunday);
         initialValues.put(KEY_TIME, time);
         initialValues.put(KEY_AUDIO, audio);
+        initialValues.put(KEY_PERIOD_ID, period.getId());
 
         String where = KEY_ROWID + " = " + id;
 
-        return mDb.update(SQLITE_TABLE, initialValues, where, null);
+        return mDb.update(TABLE, initialValues, where, null);
     }
 
     public boolean deleteAllSchedules() {
 
         int doneDelete = 0;
-        doneDelete = mDb.delete(SQLITE_TABLE, null, null);
+        doneDelete = mDb.delete(TABLE, null, null);
         Log.w(TAG, Integer.toString(doneDelete));
         return doneDelete > 0;
     }
 
     public boolean deleteItem(String key) {
         int doneDelete = 0;
-        doneDelete = mDb.delete(SQLITE_TABLE, KEY_ROWID + "=" + key, null);
+        doneDelete = mDb.delete(TABLE, KEY_ROWID + "=" + key, null);
         Log.w(TAG, Integer.toString(doneDelete));
         return doneDelete > 0;
     }
 
     public Cursor fetchAllSchedules() {
 
-        Cursor mCursor = mDb.query(SQLITE_TABLE, new String[]{KEY_ROWID, KEY_DATE, KEY_MONDAY,
+        Cursor mCursor = mDb.query(TABLE, new String[]{KEY_ROWID, KEY_DATE, KEY_MONDAY,
                         KEY_TUESDAY, KEY_WEDNESDAY, KEY_THURSDAY, KEY_FRIDAY, KEY_SATURDAY,
-                        KEY_SUNDAY, KEY_TIME, KEY_AUDIO},
+                        KEY_SUNDAY, KEY_TIME, KEY_AUDIO, KEY_PERIOD_ID},
                 null, null, null, null, null);
 
         if (mCursor != null) {
@@ -159,9 +168,9 @@ public class ScheduleDbAdapter extends DatabaseHelper {
 
     public Cursor fetchSchedule(String key) {
 
-        Cursor mCursor = mDb.query(SQLITE_TABLE, new String[]{KEY_ROWID, KEY_DATE, KEY_MONDAY,
+        Cursor mCursor = mDb.query(TABLE, new String[]{KEY_ROWID, KEY_DATE, KEY_MONDAY,
                         KEY_TUESDAY, KEY_WEDNESDAY, KEY_THURSDAY, KEY_FRIDAY, KEY_SATURDAY,
-                        KEY_SUNDAY, KEY_TIME, KEY_AUDIO},
+                        KEY_SUNDAY, KEY_TIME, KEY_AUDIO, KEY_PERIOD_ID},
                 KEY_ROWID + " = " + key, null, null, null, null);
 
         if (mCursor != null) {
@@ -173,15 +182,16 @@ public class ScheduleDbAdapter extends DatabaseHelper {
     public void insertSomeSchedules() {
 
         Date date = new Date();
+        Period period = new Period();
 
         date.setHours(13);
-        createSchedule(date, 1, 1, 1, 1, 1, 1, 1, Schedule.DEFAULT_TIME, Schedule.DEFAULT_AUDIO);
+        createSchedule(date, 1, 1, 1, 1, 1, 1, 1, Schedule.DEFAULT_TIME, Schedule.DEFAULT_AUDIO,period);
         date.setHours(14);
-        createSchedule(date, 0, 1, 1, 0, 1, 1, 1, Schedule.DEFAULT_TIME, Schedule.DEFAULT_AUDIO);
+        createSchedule(date, 0, 1, 1, 0, 1, 1, 1, Schedule.DEFAULT_TIME, Schedule.DEFAULT_AUDIO,period);
         date.setHours(15);
-        createSchedule(date, 1, 0, 1, 0, 1, 1, 0, Schedule.DEFAULT_TIME, Schedule.DEFAULT_AUDIO);
+        createSchedule(date, 1, 0, 1, 0, 1, 1, 0, Schedule.DEFAULT_TIME, Schedule.DEFAULT_AUDIO,period);
         date.setHours(16);
-        createSchedule(date, 0, 0, 0, 0, 0, 0, 0, Schedule.DEFAULT_TIME, Schedule.DEFAULT_AUDIO);
+        createSchedule(date, 0, 0, 0, 0, 0, 0, 0, Schedule.DEFAULT_TIME, Schedule.DEFAULT_AUDIO,period);
 
     }
 

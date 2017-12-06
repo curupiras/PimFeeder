@@ -1,5 +1,6 @@
 package br.com.curubodenga.pimfeeder.schedule;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
@@ -8,8 +9,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
+import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -17,19 +21,28 @@ import br.com.curubodenga.pimfeeder.R;
 import br.com.curubodenga.pimfeeder.bluetooth.BluetoothConnectThread;
 import br.com.curubodenga.pimfeeder.bluetooth.BluetoothScheduleThread;
 import br.com.curubodenga.pimfeeder.bluetooth.Properties;
+import br.com.curubodenga.pimfeeder.period.Period;
+import br.com.curubodenga.pimfeeder.period.PeriodAdjustActivity;
+import br.com.curubodenga.pimfeeder.period.PeriodDbAdapter;
+import br.com.curubodenga.pimfeeder.period.PeriodItemAdapter;
 import br.com.curubodenga.pimfeeder.utils.DateUtils;
 
-public class ScheduleAdjustActivity extends PimfeederActivity  {
+public class ScheduleAdjustActivity extends PimfeederActivity {
 
     Schedule schedule;
+    private Spinner spinner;
     private Properties properties;
     private ProgressDialog progressDialog;
+    private SimpleCursorAdapter dataAdapter;
+    private PeriodDbAdapter dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         properties = Properties.getInstance();
         setContentView(R.layout.activity_schedule_adjust);
+        dbHelper = new PeriodDbAdapter(this);
+        dbHelper.open();
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -40,22 +53,80 @@ public class ScheduleAdjustActivity extends PimfeederActivity  {
         }
 
         openTimePicker();
+        addListenerOnSpinnerItemSelection();
         updateScreen();
     }
 
+    public void addListenerOnSpinnerItemSelection() {
+        spinner = (Spinner) findViewById(R.id.scheduleAdjustSpinner);
+        spinner.setOnItemSelectedListener(new CustomOnItemSelectedListener());
+    }
 
     private Schedule getSchedule(String key) {
         ScheduleDbAdapter scheduleDbAdapter = new ScheduleDbAdapter(this);
+        PeriodDbAdapter periodDbAdapter = new PeriodDbAdapter(this);
         scheduleDbAdapter.open();
-        Cursor cursor = scheduleDbAdapter.fetchSchedule(key);
-        return Schedule.getSchedule(cursor);
+        periodDbAdapter.open();
+        Cursor cursorSchedule = scheduleDbAdapter.fetchSchedule(key);
+        return Schedule.getSchedule(cursorSchedule, periodDbAdapter);
     }
 
-    private void updateScreen() {
+    public void updateScreen() {
         updateTimePicker();
         updateDatePicker();
         updateCompleteDay();
         updateWeekDayStatus();
+        updateSpinner();
+    }
+
+    private void updateSpinner() {
+        spinner = (Spinner) findViewById(R.id.scheduleAdjustSpinner);
+
+        Cursor cursor = dbHelper.fetchAllPeriodsPlusCreate();
+
+        String[] periodColumns = new String[]{
+                PeriodDbAdapter.KEY_ICON,
+                PeriodDbAdapter.KEY_ALIAS,
+                PeriodDbAdapter.KEY_SECONDS,
+                ScheduleDbAdapter.KEY_ROWID
+        };
+
+        int[] periodListLayoutIDs = new int[]{
+                R.id.iconImageView,
+                R.id.aliasTextView,
+                R.id.secondsTextView,
+                R.id.periodItemId
+        };
+
+        dataAdapter = new PeriodItemAdapter(this, R.layout.period_list_compact_layout, cursor,
+                periodColumns, periodListLayoutIDs, 0);
+
+        spinner.setAdapter(dataAdapter);
+
+        Period period = schedule.getPeriod();
+        if (period != null) {
+            long periodId = Long.parseLong(period.getId());
+
+            for (int i = 0; i < spinner.getCount(); i++) {
+                long itemId = spinner.getItemIdAtPosition(i);
+                if (itemId == periodId) {
+                    spinner.setSelection(i);
+                }
+            }
+        }
+
+    }
+
+    private int getIndex(Spinner spinner, String id) {
+
+        int index = 0;
+
+        for (int i = 0; i < spinner.getCount(); i++) {
+            if (spinner.getItemIdAtPosition(i) == Long.getLong(id)) {
+                index = i;
+            }
+        }
+        return index;
     }
 
     private void updateTimePicker() {
@@ -309,6 +380,16 @@ public class ScheduleAdjustActivity extends PimfeederActivity  {
 
     public void save(View view) {
         if (properties.isConnectedAndDateSync()) {
+            Cursor cursor = (Cursor) spinner.getSelectedItem();
+            Period period = Period.getPeriod(cursor);
+
+            if (period == null) {
+                Toast toast = Toast.makeText(this, getResources().getString(R.string.createMeal),
+                        Toast.LENGTH_SHORT);
+                toast.show();
+                return;
+            }
+
             TimePicker timePicker = (TimePicker) findViewById(R.id.scheduleAdjustTimePicker);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(this.schedule.getDate());
@@ -316,6 +397,7 @@ public class ScheduleAdjustActivity extends PimfeederActivity  {
             calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
 
             this.schedule.setDate(calendar.getTime());
+            this.schedule.setPeriod(period);
 
             ScheduleDbAdapter scheduleDbAdapter = new ScheduleDbAdapter(this);
             scheduleDbAdapter.open();
@@ -323,14 +405,15 @@ public class ScheduleAdjustActivity extends PimfeederActivity  {
 
             sendSchedulesByBluetooth(scheduleDbAdapter);
 
-            //TODO: Essa parte tem que ser chamada ao receber a resposta do PimFeeder e fechar a janela progressDialog
+            //TODO: Essa parte tem que ser chamada ao receber a resposta do PimFeeder e fechar a
+            // janela progressDialog
 
         } else {
             bluetoothSync();
         }
     }
 
-    public void goToTargetActivity(){
+    public void goToTargetActivity() {
         Intent intent = new Intent(this, ScheduleActivity.class);
         startActivity(intent);
     }
@@ -345,7 +428,7 @@ public class ScheduleAdjustActivity extends PimfeederActivity  {
         progressDialog = ProgressDialog.show(this, loadingWindowName, msg);
 
         BluetoothScheduleThread bluetooth = new BluetoothScheduleThread(BluetoothConnectThread
-                .socket,this,progressDialog);
+                .socket, this, progressDialog);
         bluetooth.setCursor(cursor);
         bluetooth.start();
     }
@@ -358,4 +441,21 @@ public class ScheduleAdjustActivity extends PimfeederActivity  {
         bluetoothConnectThread.start();
     }
 
+    public void openPeriodAdjustActivity() {
+        Intent intent = new Intent(this, PeriodAdjustActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                updateScreen();
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+    }
 }

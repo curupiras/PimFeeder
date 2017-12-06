@@ -5,6 +5,8 @@ import android.database.Cursor;
 import java.util.Calendar;
 import java.util.Date;
 
+import br.com.curubodenga.pimfeeder.period.Period;
+import br.com.curubodenga.pimfeeder.period.PeriodDbAdapter;
 import br.com.curubodenga.pimfeeder.utils.DateUtils;
 
 /**
@@ -62,6 +64,7 @@ public class Schedule {
     private Boolean repeatSun;
     private int audio;
     private int time;
+    private Period period;
 
     public Schedule() {
         this.date = new Date();
@@ -153,7 +156,7 @@ public class Schedule {
         return time;
     }
 
-    public void setTime(int time) {
+    private void setTime(int time) {
         this.time = time;
     }
 
@@ -243,6 +246,17 @@ public class Schedule {
         return schedule;
     }
 
+    public static Schedule getSchedule(Cursor cursor, PeriodDbAdapter periodDbAdapter) {
+        Schedule schedule = getSchedule(cursor);
+        String periodId = cursor.getString(cursor.getColumnIndex(ScheduleDbAdapter.KEY_PERIOD_ID));
+
+        Cursor periodCursor = periodDbAdapter.fetchPeriod(periodId);
+        Period period = Period.getPeriod(periodCursor);
+        schedule.setPeriod(period);
+
+        return schedule;
+    }
+
     public String getId() {
         return id;
     }
@@ -326,5 +340,14 @@ public class Schedule {
     private boolean anyRepeatSetted() {
         return repeatSun || repeatMon || repeatTue || repeatWed || repeatThu || repeatFri ||
                 repeatSat;
+    }
+
+    public Period getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(Period period) {
+        this.time = period.getSeconds();
+        this.period = period;
     }
 }

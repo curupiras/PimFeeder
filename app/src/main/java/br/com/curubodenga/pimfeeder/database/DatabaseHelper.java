@@ -16,7 +16,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DbAdapter";
     private static final String DATABASE_NAME = "PimFeeder";
     protected DatabaseHelper mDbHelper;
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 8;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -34,8 +34,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                 + newVersion + ", which will destroy all old data");
-        db.execSQL("DROP TABLE IF EXISTS " + PeriodDbAdapter.SQLITE_TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + ScheduleDbAdapter.SQLITE_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + PeriodDbAdapter.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + ScheduleDbAdapter.TABLE);
         onCreate(db);
     }
 }

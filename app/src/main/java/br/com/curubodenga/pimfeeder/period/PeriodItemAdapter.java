@@ -62,7 +62,12 @@ public class PeriodItemAdapter extends SimpleCursorAdapter {
 
         TextView secondsTextView = (TextView) view.findViewById(to[2]);
         String seconds = cursor.getString(cursor.getColumnIndex(from[2]));
-        secondsTextView.setText(seconds + " seg");
+
+        if(seconds.isEmpty()){
+            secondsTextView.setText(seconds);
+        }else{
+            secondsTextView.setText(seconds + " seg");
+        }
 
         TextView periodItemId = (TextView) view.findViewById(to[3]);
         String itemId = cursor.getString(cursor.getColumnIndex(from[3]));

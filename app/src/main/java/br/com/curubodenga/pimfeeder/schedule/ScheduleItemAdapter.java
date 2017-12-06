@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.curubodenga.pimfeeder.R;
+import br.com.curubodenga.pimfeeder.period.Period;
+import br.com.curubodenga.pimfeeder.period.PeriodDbAdapter;
 import br.com.curubodenga.pimfeeder.utils.DateUtils;
 
 public class ScheduleItemAdapter extends SimpleCursorAdapter {
@@ -80,6 +83,15 @@ public class ScheduleItemAdapter extends SimpleCursorAdapter {
             showWeekDaysLayout(view);
             hideCompleteDayTextView(view);
         }
+
+        String periodId = cursor.getString(cursor.getColumnIndex(ScheduleDbAdapter.KEY_PERIOD_ID));
+        PeriodDbAdapter periodDbAdapter = new PeriodDbAdapter(context);
+        periodDbAdapter.open();
+        Cursor periodCursor = periodDbAdapter.fetchPeriod(periodId);
+        Period period = Period.getPeriod(periodCursor);
+
+        ImageView feedImageView = (ImageView) view.findViewById(R.id.feedImageView);
+        feedImageView.setImageResource(period.getIcon());
     }
 
     private void hideWeekDaysLayout(View view) {

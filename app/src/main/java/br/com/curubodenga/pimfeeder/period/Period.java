@@ -59,9 +59,15 @@ public class Period {
     }
 
     public static Period getPeriod(Cursor cursor) {
-        Period period = new Period();
 
         String id = cursor.getString(cursor.getColumnIndex(PeriodDbAdapter.KEY_ROWID));
+
+        if(id.equals("0")){
+            return null;
+        }
+
+        Period period = new Period();
+
         int icon = cursor.getInt(cursor.getColumnIndex(PeriodDbAdapter.KEY_ICON));
         String alias = cursor.getString(cursor.getColumnIndex(PeriodDbAdapter.KEY_ALIAS));
         int seconds = cursor.getInt(cursor.getColumnIndex(PeriodDbAdapter.KEY_SECONDS));

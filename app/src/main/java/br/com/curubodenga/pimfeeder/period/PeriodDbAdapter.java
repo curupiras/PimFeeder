@@ -3,6 +3,8 @@ package br.com.curubodenga.pimfeeder.period;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.MatrixCursor;
+import android.database.MergeCursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -24,12 +26,12 @@ public class PeriodDbAdapter extends DatabaseHelper {
     private static final String TAG = "PeriodDbAdapter";
     private SQLiteDatabase mDb;
 
-    public static final String SQLITE_TABLE = "Period";
+    public static final String TABLE = "Period";
 
     private final Context context;
 
     public static final String DATABASE_CREATE =
-            "CREATE TABLE if not exists " + SQLITE_TABLE + " (" +
+            "CREATE TABLE if not exists " + TABLE + " (" +
                     KEY_ROWID + " integer PRIMARY KEY autoincrement," +
                     KEY_ICON + " text," +
                     KEY_ALIAS + " text," +
@@ -72,7 +74,7 @@ public class PeriodDbAdapter extends DatabaseHelper {
         initialValues.put(KEY_ALIAS, alias);
         initialValues.put(KEY_SECONDS, seconds);
 
-        return mDb.insert(SQLITE_TABLE, null, initialValues);
+        return mDb.insert(TABLE, null, initialValues);
     }
 
     private long updatePeriod(String id, int icon, String alias, int seconds) {
@@ -84,27 +86,27 @@ public class PeriodDbAdapter extends DatabaseHelper {
 
         String where = KEY_ROWID + " = " + id;
 
-        return mDb.update(SQLITE_TABLE, initialValues, where, null);
+        return mDb.update(TABLE, initialValues, where, null);
     }
 
     public boolean deleteAllPeriods() {
 
         int doneDelete = 0;
-        doneDelete = mDb.delete(SQLITE_TABLE, null, null);
+        doneDelete = mDb.delete(TABLE, null, null);
         Log.w(TAG, Integer.toString(doneDelete));
         return doneDelete > 0;
     }
 
     public boolean deleteItem(String key) {
         int doneDelete = 0;
-        doneDelete = mDb.delete(SQLITE_TABLE, KEY_ROWID + "=" + key, null);
+        doneDelete = mDb.delete(TABLE, KEY_ROWID + "=" + key, null);
         Log.w(TAG, Integer.toString(doneDelete));
         return doneDelete > 0;
     }
 
     public Cursor fetchAllPeriods() {
 
-        Cursor mCursor = mDb.query(SQLITE_TABLE, new String[]{KEY_ROWID, KEY_ICON, KEY_ALIAS,
+        Cursor mCursor = mDb.query(TABLE, new String[]{KEY_ROWID, KEY_ICON, KEY_ALIAS,
                 KEY_SECONDS}, null, null, null, null, null);
 
         if (mCursor != null) {
@@ -113,9 +115,26 @@ public class PeriodDbAdapter extends DatabaseHelper {
         return mCursor;
     }
 
+    public Cursor fetchAllPeriodsPlusCreate() {
+
+        Cursor mCursor = mDb.query(TABLE, new String[]{KEY_ROWID, KEY_ICON, KEY_ALIAS,
+                KEY_SECONDS}, null, null, null, null, null);
+
+        MatrixCursor matrixCursor = new MatrixCursor(new String[]{KEY_ROWID, KEY_ICON, KEY_ALIAS,
+                KEY_SECONDS});
+        matrixCursor.addRow(new Object[]{0, 0, "Criar...", ""});
+
+        MergeCursor mergeCursor = new MergeCursor(new Cursor[]{mCursor, matrixCursor});
+
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mergeCursor;
+    }
+
     public Cursor fetchPeriod(String key) {
 
-        Cursor mCursor = mDb.query(SQLITE_TABLE, new String[]{KEY_ROWID, KEY_ICON, KEY_ALIAS,
+        Cursor mCursor = mDb.query(TABLE, new String[]{KEY_ROWID, KEY_ICON, KEY_ALIAS,
                 KEY_SECONDS}, KEY_ROWID + " = " + key, null, null, null, null);
 
         if (mCursor != null) {
