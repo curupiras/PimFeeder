@@ -91,8 +91,8 @@ public class PeriodAdjustActivity extends PimfeederActivity {
         previewsButton.setBackgroundColor(Color.TRANSPARENT);
         nextButton.setBackgroundColor(Color.TRANSPARENT);
 
-        previewsButton.setTextColor(Color.rgb(0x87,0x87,0x87));
-        nextButton.setTextColor(Color.rgb(0x87,0x87,0x87));
+        previewsButton.setTextColor(Color.rgb(0x87, 0x87, 0x87));
+        nextButton.setTextColor(Color.rgb(0x87, 0x87, 0x87));
 
         previewsButton.setText("<");
         nextButton.setText(">");
@@ -166,17 +166,22 @@ public class PeriodAdjustActivity extends PimfeederActivity {
         EditText editText = (EditText) findViewById(R.id.aliasEditText);
         ImageSwitcher imageSwitcher = (ImageSwitcher) findViewById(R.id.periodImageSwitcher);
 
+        String alias = editText.getText().toString();
+        if (alias.trim().length() < 1) {
+            String msg = this.getResources().getString(R.string.no_alias_meal);
+            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+            return;
+        }
+
         this.period.setSeconds(numberPicker.getValue());
-        this.period.setAlias(editText.getText().toString());
+        this.period.setAlias(alias.trim());
         this.period.setIcon(currentImage);
 
         PeriodDbAdapter periodDbAdapter = new PeriodDbAdapter(this);
         periodDbAdapter.open();
         periodDbAdapter.createPeriod(this.period);
 
-
-        Intent intent = new Intent(this, PeriodActivity.class);
-        startActivity(intent);
+        finish();
     }
 
     public void bluetoothSync() {

@@ -42,7 +42,6 @@
                 android:textSize="20dp"/>
 
 
-
             <TextView
                 android:id="@+id/dateScheduleAdjustSaveButton"
                 android:layout_width="wrap_content"
@@ -68,9 +67,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/layout_bg"
             android:orientation="horizontal"
-            android:layout_marginBottom="10dp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp">
 
@@ -207,14 +206,49 @@
 
         </LinearLayout>
 
-        <TimePicker
-            android:id="@+id/scheduleAdjustTimePicker"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:background="@drawable/layout_bg"
-            android:theme="@style/MyTimePickerTheme"
-            android:timePickerMode="spinner"/>
+            android:orientation="horizontal">
+
+            <TimePicker
+                android:id="@+id/scheduleAdjustTimePicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginRight="5sp"
+                android:layout_weight="1"
+                android:background="@drawable/layout_bg"
+                android:theme="@style/MyTimePickerTheme"
+                android:timePickerMode="spinner"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5sp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/mealPromptScheduleAdjustTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="openDatePicker"
+                    android:text="@string/meal_prompt"
+                    android:textSize="20sp"/>
+
+                <Spinner
+                    android:id="@+id/scheduleAdjustSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginTop="10sp"
+                    android:background="@drawable/layout_bg"
+                    android:prompt="@string/meal_prompt"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/dateScheduleAdjustOkButton"

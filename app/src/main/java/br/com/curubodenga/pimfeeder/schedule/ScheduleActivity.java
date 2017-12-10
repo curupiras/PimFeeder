@@ -219,17 +219,13 @@ public class ScheduleActivity extends PimfeederActivity {
     }
 
     private void sendSchedulesByBluetooth(ScheduleDbAdapter adapter) {
-
-        Cursor cursor = adapter.fetchAllSchedules();
-
-
         String loadingWindowName = getResources().getString(R.string.loadingWindowName);
         String msg = getResources().getString(R.string.sendingMessage);
         progressDialog = ProgressDialog.show(this, loadingWindowName, msg);
 
         BluetoothScheduleThread bluetooth = new BluetoothScheduleThread(BluetoothConnectThread
                 .socket,this,progressDialog);
-        bluetooth.setCursor(cursor);
+        bluetooth.setAdapter(adapter);
         bluetooth.start();
     }
 

@@ -57,6 +57,13 @@ public class ScheduleAdjustActivity extends PimfeederActivity {
         updateScreen();
     }
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        updateScreen();
+    }
+
     public void addListenerOnSpinnerItemSelection() {
         spinner = (Spinner) findViewById(R.id.scheduleAdjustSpinner);
         spinner.setOnItemSelectedListener(new CustomOnItemSelectedListener());
@@ -419,17 +426,13 @@ public class ScheduleAdjustActivity extends PimfeederActivity {
     }
 
     private void sendSchedulesByBluetooth(ScheduleDbAdapter adapter) {
-
-        Cursor cursor = adapter.fetchAllSchedules();
-
-
         String loadingWindowName = getResources().getString(R.string.loadingWindowName);
         String msg = getResources().getString(R.string.sendingMessage);
         progressDialog = ProgressDialog.show(this, loadingWindowName, msg);
 
         BluetoothScheduleThread bluetooth = new BluetoothScheduleThread(BluetoothConnectThread
                 .socket, this, progressDialog);
-        bluetooth.setCursor(cursor);
+        bluetooth.setAdapter(adapter);
         bluetooth.start();
     }
 

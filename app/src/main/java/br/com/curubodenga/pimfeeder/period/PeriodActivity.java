@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import br.com.curubodenga.pimfeeder.R;
 import br.com.curubodenga.pimfeeder.bluetooth.BluetoothConnectThread;
@@ -46,6 +47,13 @@ public class PeriodActivity extends PimfeederActivity {
         dbHelper = new PeriodDbAdapter(this);
         dbHelper.open();
 
+        displayListView();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
         displayListView();
     }
 
@@ -116,14 +124,22 @@ public class PeriodActivity extends PimfeederActivity {
 
     public void deleteItem(View view) {
         PeriodDbAdapter periodDbAdapter = new PeriodDbAdapter(this);
+        ScheduleDbAdapter scheduleDbAdapter = new ScheduleDbAdapter(this);
         periodDbAdapter.open();
+        scheduleDbAdapter.open();
 
         View linearLayout = (View) view.getParent().getParent().getParent();
         TextView periodItemIdTextView = (TextView) linearLayout.findViewById(R.id.periodItemId);
         String itemId = periodItemIdTextView.getText().toString();
 
-        periodDbAdapter.deleteItem(itemId);
+        Cursor cursor = scheduleDbAdapter.fetchSchedulesByPeriodId(itemId);
+        if (cursor.getCount() > 0) {
+            String msg = this.getResources().getString(R.string.active_meal);
+            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+            return;
+        }
 
+        periodDbAdapter.deleteItem(itemId);
         displayListView();
     }
 
@@ -195,8 +211,8 @@ public class PeriodActivity extends PimfeederActivity {
         }
     }
 
-    public void updateMenuIcons(){
-        if(menu!=null){
+    public void updateMenuIcons() {
+        if (menu != null) {
             menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_clock_off));
             menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_chicken_leg_on));
         }
@@ -205,7 +221,7 @@ public class PeriodActivity extends PimfeederActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent authActivityResult) {
         super.onActivityResult(requestCode, resultCode, authActivityResult);
-        if(resultCode == RESULT_OK && requestCode == REQUEST_ENABLE_BT){
+        if (resultCode == RESULT_OK && requestCode == REQUEST_ENABLE_BT) {
             bluetoothSync();
         }
     }

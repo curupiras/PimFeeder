@@ -179,6 +179,19 @@ public class ScheduleDbAdapter extends DatabaseHelper {
         return mCursor;
     }
 
+    public Cursor fetchSchedulesByPeriodId(String periodId) {
+
+        Cursor mCursor = mDb.query(TABLE, new String[]{KEY_ROWID, KEY_DATE, KEY_MONDAY,
+                        KEY_TUESDAY, KEY_WEDNESDAY, KEY_THURSDAY, KEY_FRIDAY, KEY_SATURDAY,
+                        KEY_SUNDAY, KEY_TIME, KEY_AUDIO, KEY_PERIOD_ID},
+                KEY_PERIOD_ID + " = " + periodId, null, null, null, null);
+
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+    }
+
     public void insertSomeSchedules() {
 
         Date date = new Date();

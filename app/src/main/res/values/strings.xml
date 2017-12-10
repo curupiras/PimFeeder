@@ -35,6 +35,8 @@
     <string name="icon">Escolha um ícone:</string>
     <string name="meal_prompt">Escolha uma refeição:</string>
     <string name="create">"Criar..."</string>
+    <string name="active_meal">"Refeições em uso não podem ser excluidas!"</string>
+    <string name="no_alias_meal">"Insira um nome para a refeição."</string>
 
     <!-- Strings related to Settings -->
 
