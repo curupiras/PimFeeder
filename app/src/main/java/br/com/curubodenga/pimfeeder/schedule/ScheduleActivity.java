@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -133,17 +134,14 @@ public class ScheduleActivity extends PimfeederActivity {
 
     public void deleteItem(View view) {
         if (properties.isConnectedAndDateSync()) {
-            ScheduleDbAdapter scheduleDbAdapter = new ScheduleDbAdapter(this);
-            scheduleDbAdapter.open();
-
             View linearLayout = (View) view.getParent().getParent().getParent();
             TextView scheduleItemIdTextView = (TextView) linearLayout.findViewById(R.id
                     .scheduleItemId);
             String itemId = scheduleItemIdTextView.getText().toString();
 
-            scheduleDbAdapter.deleteItem(itemId);
+            dbHelper.deleteItem(itemId);
 
-            sendSchedulesByBluetooth(scheduleDbAdapter);
+            sendSchedulesByBluetooth(dbHelper);
             displayListView();
         } else {
             bluetoothSync();
@@ -153,8 +151,10 @@ public class ScheduleActivity extends PimfeederActivity {
     public void bluetoothSync() {
         String loadingWindowName = getResources().getString(R.string.loadingWindowName);
         String msg = getResources().getString(R.string.connectingMessage);
+        int i = getRequestedOrientation();
         progressDialog = ProgressDialog.show(this, loadingWindowName, msg);
         Thread bluetoothConnectThread = new BluetoothConnectThread(this, this.progressDialog);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         bluetoothConnectThread.start();
     }
 
@@ -226,6 +226,7 @@ public class ScheduleActivity extends PimfeederActivity {
         BluetoothScheduleThread bluetooth = new BluetoothScheduleThread(BluetoothConnectThread
                 .socket,this,progressDialog);
         bluetooth.setAdapter(adapter);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         bluetooth.start();
     }
 

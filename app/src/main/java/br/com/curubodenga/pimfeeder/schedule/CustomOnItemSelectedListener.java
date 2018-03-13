@@ -18,6 +18,7 @@ public class CustomOnItemSelectedListener implements AdapterView.OnItemSelectedL
 
         if(period == null){
             ScheduleAdjustActivity host = (ScheduleAdjustActivity) parent.getContext();
+            host.setNewPeriod(true);
             host.openPeriodAdjustActivity();
         }
     }

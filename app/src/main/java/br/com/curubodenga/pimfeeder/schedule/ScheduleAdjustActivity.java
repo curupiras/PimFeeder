@@ -3,6 +3,7 @@ package br.com.curubodenga.pimfeeder.schedule;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -34,15 +35,21 @@ public class ScheduleAdjustActivity extends PimfeederActivity {
     private Properties properties;
     private ProgressDialog progressDialog;
     private SimpleCursorAdapter dataAdapter;
-    private PeriodDbAdapter dbHelper;
+    private PeriodDbAdapter periodDbAdapter;
+    private ScheduleDbAdapter scheduleDbAdapter;
+    private boolean newPeriod = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         properties = Properties.getInstance();
         setContentView(R.layout.activity_schedule_adjust);
-        dbHelper = new PeriodDbAdapter(this);
-        dbHelper.open();
+
+        periodDbAdapter = new PeriodDbAdapter(this);
+        periodDbAdapter.open();
+
+        scheduleDbAdapter = new ScheduleDbAdapter(this);
+        scheduleDbAdapter.open();
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -58,8 +65,7 @@ public class ScheduleAdjustActivity extends PimfeederActivity {
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
         updateScreen();
     }
@@ -70,10 +76,6 @@ public class ScheduleAdjustActivity extends PimfeederActivity {
     }
 
     private Schedule getSchedule(String key) {
-        ScheduleDbAdapter scheduleDbAdapter = new ScheduleDbAdapter(this);
-        PeriodDbAdapter periodDbAdapter = new PeriodDbAdapter(this);
-        scheduleDbAdapter.open();
-        periodDbAdapter.open();
         Cursor cursorSchedule = scheduleDbAdapter.fetchSchedule(key);
         return Schedule.getSchedule(cursorSchedule, periodDbAdapter);
     }
@@ -89,7 +91,7 @@ public class ScheduleAdjustActivity extends PimfeederActivity {
     private void updateSpinner() {
         spinner = (Spinner) findViewById(R.id.scheduleAdjustSpinner);
 
-        Cursor cursor = dbHelper.fetchAllPeriodsPlusCreate();
+        Cursor cursor = periodDbAdapter.fetchAllPeriodsPlusCreate();
 
         String[] periodColumns = new String[]{
                 PeriodDbAdapter.KEY_ICON,
@@ -120,6 +122,11 @@ public class ScheduleAdjustActivity extends PimfeederActivity {
                     spinner.setSelection(i);
                 }
             }
+        }
+
+        if (newPeriod == true) {
+            spinner.setSelection(spinner.getCount() - 2);
+            newPeriod = false;
         }
 
     }
@@ -406,10 +413,7 @@ public class ScheduleAdjustActivity extends PimfeederActivity {
             this.schedule.setDate(calendar.getTime());
             this.schedule.setPeriod(period);
 
-            ScheduleDbAdapter scheduleDbAdapter = new ScheduleDbAdapter(this);
-            scheduleDbAdapter.open();
             scheduleDbAdapter.createSchedule(this.schedule);
-
             sendSchedulesByBluetooth(scheduleDbAdapter);
 
             //TODO: Essa parte tem que ser chamada ao receber a resposta do PimFeeder e fechar a
@@ -433,6 +437,7 @@ public class ScheduleAdjustActivity extends PimfeederActivity {
         BluetoothScheduleThread bluetooth = new BluetoothScheduleThread(BluetoothConnectThread
                 .socket, this, progressDialog);
         bluetooth.setAdapter(adapter);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         bluetooth.start();
     }
 
@@ -441,6 +446,7 @@ public class ScheduleAdjustActivity extends PimfeederActivity {
         String msg = getResources().getString(R.string.connectingMessage);
         progressDialog = ProgressDialog.show(this, loadingWindowName, msg);
         Thread bluetoothConnectThread = new BluetoothConnectThread(this, progressDialog);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         bluetoothConnectThread.start();
     }
 
@@ -460,5 +466,13 @@ public class ScheduleAdjustActivity extends PimfeederActivity {
                 //Write your code if there's no result
             }
         }
+    }
+
+    public boolean isNewPeriod() {
+        return newPeriod;
+    }
+
+    public void setNewPeriod(boolean newPeriod) {
+        this.newPeriod = newPeriod;
     }
 }

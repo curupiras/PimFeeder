@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.view.View;
 import android.widget.Toast;
 
@@ -47,6 +48,7 @@ public class BluetoothConnectThread extends Thread {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             activity.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             progressDialog.dismiss();
+            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             return;
         }
 
@@ -91,6 +93,7 @@ public class BluetoothConnectThread extends Thread {
                     closeException.printStackTrace();
                 }
                 progressDialog.dismiss();
+                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
                 activity.runOnUiThread(new Runnable() {
                     public void run() {
                         String msg = activity.getResources().getString(R.string

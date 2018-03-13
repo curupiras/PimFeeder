@@ -208,5 +208,18 @@ public class ScheduleDbAdapter extends DatabaseHelper {
 
     }
 
+    public void beginTransaction(){
+        mDb.beginTransaction();
+    }
+
+    public void rollback(){
+        mDb.endTransaction();
+    }
+
+    public void commit(){
+        mDb.setTransactionSuccessful();
+        mDb.endTransaction();
+    }
+
 
 }
