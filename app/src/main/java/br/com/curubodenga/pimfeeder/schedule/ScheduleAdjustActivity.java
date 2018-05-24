@@ -425,8 +425,9 @@ public class ScheduleAdjustActivity extends PimfeederActivity {
     }
 
     public void goToTargetActivity() {
-        Intent intent = new Intent(this, ScheduleActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this, ScheduleActivity.class);
+//        startActivity(intent);
+        finish();
     }
 
     private void sendSchedulesByBluetooth(ScheduleDbAdapter adapter) {

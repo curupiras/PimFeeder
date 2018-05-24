@@ -11,7 +11,7 @@
     <item
         android:id="@+id/action_period"
         android:icon="@drawable/ic_chicken_leg_off"
-        android:title="Período"
+        android:title="Refeições"
         app:showAsAction="ifRoom"/>
 
     <item

@@ -38,7 +38,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:onClick="openDatePicker"
                 android:textSize="20dp"/>
 
 
@@ -233,7 +232,6 @@
                     android:id="@+id/mealPromptScheduleAdjustTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="openDatePicker"
                     android:text="@string/meal_prompt"
                     android:textSize="20sp"/>
 

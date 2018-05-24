@@ -32,8 +32,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:onClick="openDatePicker"
-                    android:textSize="20sp"/>
+                    android:textSize="18sp"/>
 
                 <ImageButton
                     android:id="@+id/openCalendarScheduleAdjustImageButton"
@@ -232,9 +231,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20sp"
-                android:onClick="openDatePicker"
                 android:text="@string/meal_prompt"
-                android:textSize="20sp"/>
+                android:textSize="18sp"/>
 
             <Spinner
                 android:id="@+id/scheduleAdjustSpinner"

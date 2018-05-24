@@ -162,8 +162,9 @@ public class PeriodActivity extends PimfeederActivity {
                 return true;
 
             case R.id.action_schedule:
-                Intent intent = new Intent(this, ScheduleActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(this, ScheduleActivity.class);
+//                startActivity(intent);
+                finish();
                 return true;
 
             default:
