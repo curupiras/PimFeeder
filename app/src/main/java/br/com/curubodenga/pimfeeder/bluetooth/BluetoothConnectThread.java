@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import br.com.curubodenga.pimfeeder.R;
 import br.com.curubodenga.pimfeeder.schedule.PimfeederActivity;
+import br.com.curubodenga.pimfeeder.schedule.ScheduleAdjustActivity;
 
 public class BluetoothConnectThread extends Thread {
     private final static int REQUEST_ENABLE_BT = 1;
@@ -24,8 +25,18 @@ public class BluetoothConnectThread extends Thread {
     private BluetoothAdapter mBluetoothAdapter;
     public static BluetoothSocket socket;
     private PimfeederActivity activity;
+    private Intent intent;
 
     public BluetoothConnectThread(PimfeederActivity activity, ProgressDialog progressDialog) {
+        this.intent = null;
+        this.activity = activity;
+        this.properties = Properties.getInstance();
+        this.progressDialog = progressDialog;
+    }
+
+    public BluetoothConnectThread(PimfeederActivity activity, ProgressDialog progressDialog,
+                                  Intent intent) {
+        this.intent = intent;
         this.activity = activity;
         this.properties = Properties.getInstance();
         this.progressDialog = progressDialog;
@@ -82,6 +93,10 @@ public class BluetoothConnectThread extends Thread {
                 Toast toast;
                 socket.connect();
 
+                if (Properties.getInstance().isConnected() && intent != null) {
+                    activity.startActivity(intent);
+                }
+
                 Thread bluetoothDateThread = new BluetoothDateThread(socket, activity,
                         progressDialog);
                 bluetoothDateThread.start();
@@ -116,5 +131,9 @@ public class BluetoothConnectThread extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setIntent(Intent intent) {
+        this.intent = intent;
     }
 }

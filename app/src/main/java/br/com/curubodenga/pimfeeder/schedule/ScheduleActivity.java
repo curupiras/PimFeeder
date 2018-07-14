@@ -34,6 +34,7 @@ public class ScheduleActivity extends PimfeederActivity {
     private Menu menu;
     private ProgressDialog progressDialog;
     private Properties properties;
+    private Intent nextActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,16 +114,20 @@ public class ScheduleActivity extends PimfeederActivity {
             intent.putExtra(ScheduleDbAdapter.KEY_ROWID, key);
             startActivity(intent);
         } else {
-            bluetoothSync();
+            Intent intent = new Intent(this, ScheduleAdjustActivity.class);
+            intent.putExtra(ScheduleDbAdapter.KEY_ROWID, key);
+            this.nextActivity=intent;
+            bluetoothSync(intent);
         }
     }
 
     public void openScheduleAdjustActivity(View view) {
+        Intent intent = new Intent(this, ScheduleAdjustActivity.class);
         if (properties.isConnectedAndDateSync()) {
-            Intent intent = new Intent(this, ScheduleAdjustActivity.class);
             startActivity(intent);
         } else {
-            bluetoothSync();
+            this.nextActivity=intent;
+            bluetoothSync(intent);
         }
     }
 
@@ -148,14 +153,19 @@ public class ScheduleActivity extends PimfeederActivity {
         }
     }
 
-    public void bluetoothSync() {
+    public void bluetoothSync(Intent intent){
         String loadingWindowName = getResources().getString(R.string.loadingWindowName);
         String msg = getResources().getString(R.string.connectingMessage);
         int i = getRequestedOrientation();
         progressDialog = ProgressDialog.show(this, loadingWindowName, msg);
-        Thread bluetoothConnectThread = new BluetoothConnectThread(this, this.progressDialog);
+        Thread bluetoothConnectThread = new BluetoothConnectThread(this, this.progressDialog, intent);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         bluetoothConnectThread.start();
+    }
+
+    public void bluetoothSync() {
+        this.nextActivity=null;
+        bluetoothSync(null);
     }
 
     @Override
@@ -241,7 +251,7 @@ public class ScheduleActivity extends PimfeederActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent authActivityResult) {
         super.onActivityResult(requestCode, resultCode, authActivityResult);
         if(resultCode == RESULT_OK && requestCode == REQUEST_ENABLE_BT){
-            bluetoothSync();
+            bluetoothSync(this.nextActivity);
         }
     }
 }
