@@ -46,7 +46,12 @@ public class ScheduleActivity extends PimfeederActivity {
         manageBluetoothConnection();
         dbHelper = new ScheduleDbAdapter(this);
         dbHelper.open();
+        displayListView();
+    }
 
+    @Override
+    public void onResume(){
+        super.onResume();
         displayListView();
     }
 
@@ -158,6 +163,7 @@ public class ScheduleActivity extends PimfeederActivity {
         String msg = getResources().getString(R.string.connectingMessage);
         int i = getRequestedOrientation();
         progressDialog = ProgressDialog.show(this, loadingWindowName, msg);
+
         Thread bluetoothConnectThread = new BluetoothConnectThread(this, this.progressDialog, intent);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         bluetoothConnectThread.start();
